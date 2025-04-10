@@ -85,7 +85,7 @@ With lasy (remove dependencies if already added elsewhere):
 }
 ```
 
-Lsp-zero setup example (don't show mappings setup):
+Lsp-zero setup example (doesn't show mappings setup):
 
 ```
 local cmp = require('cmp')
