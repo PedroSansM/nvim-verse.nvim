@@ -2,7 +2,7 @@
 Theme: https://github.com/Luxed/ayu-vim
 
 ## Features
-- Lsp (and text based) auto completion.
+- LSP (and text based) auto completion.
 - Disgnostic messages.
 - Go to definition.
 - Syntax highlighting.
