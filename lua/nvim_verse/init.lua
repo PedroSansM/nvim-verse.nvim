@@ -2,7 +2,7 @@ local M = {}
 
 M.setup = function(opts)
     M._lspPath = opts.lspPath
-    M._verseProjectPath = opts.VerseProjectPath
+    M._verseProjectPath = opts.verseProjectPath
 end
 
 M.StartVerseLSP = function()
