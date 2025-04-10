@@ -13,3 +13,8 @@
 - Trouble (https://github.com/folke/trouble.nvim) (visualization of diagnostic messages).
 
 ## Instalation
+With lasy:
+
+```
+This is a test
+```
