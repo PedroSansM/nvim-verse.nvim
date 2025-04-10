@@ -25,14 +25,6 @@ function StartVerseLSP()
 	end
 end
 
-vim.api.nvim_create_autocmd('LspAttach', {
-	callback = function(args)
-		vim.keymap.set('n', '<F12>', vim.lsp.buf.definition, {buffer = args.buf})
-		vim.keymap.set('n', 'gh', vim.lsp.buf.hover, {buffer = args.buf})
-		vim.keymap.set({'n', 'i'}, '<C-.>', vim.lsp.buf.code_action, {buffer = args.buf})
-	end
-})
-
 vim.api.nvim_create_autocmd('BufEnter', {
     pattern = {'*.verse'},
 	callback = function(args)
