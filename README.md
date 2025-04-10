@@ -1,2 +1,2 @@
-# NvimVerse.nvim
-## This is a test
+## Features
+- Lsp (and text bases) autocompletion.
