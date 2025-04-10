@@ -1,8 +1,8 @@
-local NVimVerse = {}
+local M = {}
 
-NVimVerse.setup = function(opts)
-    NVimVerse._lspPath = opts.lspPath
-    NVimVerse._verseProjectPath = opts.VerseProjectPath
+M.setup = function(opts)
+    M._lspPath = opts.lspPath
+    M._verseProjectPath = opts.VerseProjectPath
 end
 
 function StartVerseLSP()
@@ -12,11 +12,11 @@ function StartVerseLSP()
 		name = 'verse-lsp',
 		cmd = {NVimVerse._lspPath},
 		workspace_folders = {
-			{uri = vim.uri_from_fname(NVimVerse._verseProjectPath..projectName..'/Fortnite'), name = 'Fortnite'},
-			{uri = vim.uri_from_fname(NVimVerse._verseProjectPath..projectName..'/UnrealEngine'), name = 'UnrealEngine'},
-			{uri = vim.uri_from_fname(NVimVerse._verseProjectPath..projectName..'/Verse'), name = 'Verse'},
-			{uri = vim.uri_from_fname(NVimVerse._verseProjectPath..projectName..'/'..projectName..'-Assets'), name = projectName..'/Assets'},
-			{uri = vim.uri_from_fname(NVimVerse._verseProjectPath..projectName..'/vproject'), name = 'vproject'},
+			{uri = vim.uri_from_fname(M._verseProjectPath..projectName..'/Fortnite'), name = 'Fortnite'},
+			{uri = vim.uri_from_fname(M._verseProjectPath..projectName..'/UnrealEngine'), name = 'UnrealEngine'},
+			{uri = vim.uri_from_fname(M._verseProjectPath..projectName..'/Verse'), name = 'Verse'},
+			{uri = vim.uri_from_fname(M._verseProjectPath..projectName..'/'..projectName..'-Assets'), name = projectName..'/Assets'},
+			{uri = vim.uri_from_fname(M._verseProjectPath..projectName..'/vproject'), name = 'vproject'},
 			{uri = vim.uri_from_fname(projectPath), name = 'PROJECT'}
 		}
 	})
@@ -40,3 +40,5 @@ vim.api.nvim_create_autocmd('BufEnter', {
         vim.cmd[[ScorpeonHighlightEnable]]
 	end
 })
+
+return M
