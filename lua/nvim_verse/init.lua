@@ -5,7 +5,7 @@ M.setup = function(opts)
     M._verseProjectPath = opts.VerseProjectPath
 end
 
-function StartVerseLSP()
+M.StartVerseLSP = function()
     local projectPath = vim.fn.getcwd()
     local projectName = vim.fs.basename(vim.fs.dirname(projectPath))
     local clientId = vim.lsp.start({
@@ -28,7 +28,7 @@ end
 vim.api.nvim_create_autocmd('BufEnter', {
     pattern = {'*.verse'},
 	callback = function(args)
-        StartVerseLSP()
+        M.StartVerseLSP()
         vim.cmd[[ScorpeonHighlightEnable]]
 	end
 })
