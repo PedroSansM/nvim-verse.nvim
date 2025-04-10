@@ -78,7 +78,7 @@ With lasy (remove dependencies if already added elsewhere):
         config = function()
             require('nvim_verse').setup({
                 lspPath = 'full/path/to/epics/verse/lsp/executable',
-                verseProjectPath = 'full/path/to/saved/verseproject' -- e.g. C:/Users/username/AppData/Local/UnrealEditorFortnite/Saved/VerseProject/'
+                verseProjectPath = 'full/path/to/saved/verseproject' -- e.g. 'C:/Users/username/AppData/Local/UnrealEditorFortnite/Saved/VerseProject/'
             })
         end
     }
