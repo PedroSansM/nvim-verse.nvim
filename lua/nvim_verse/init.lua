@@ -1,3 +1,4 @@
+print("Executed")
 local M = {}
 
 M.setup = function(opts)
