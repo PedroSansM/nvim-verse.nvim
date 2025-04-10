@@ -3,7 +3,7 @@ Theme: https://github.com/Luxed/ayu-vim
 
 ## Features
 - LSP (and text based) autocompletion.
-- Disgnostic messages.
+- Diagnostic messages.
 - Go to definition.
 - Syntax highlighting.
 
