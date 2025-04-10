@@ -94,7 +94,7 @@ local cmp_action = require('lsp-zero').cmp_action()
 cmp.setup({
 	sources = {
 		{name = 'nvim_lsp'},
-		{name = 'buffer'} -- Text based auto completion is strongly recomended
+		{name = 'buffer'} -- Text based autocompletion is strongly recomended
 	},
 	preselect = 'item',
 	completion = {
