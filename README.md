@@ -1,2 +1,4 @@
 ## Features
-- Lsp (and text bases) autocompletion.
+- Lsp (and text based) autocompletion.
+- Disgnostic messages.
+- Go to definition.
