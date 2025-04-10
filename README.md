@@ -17,7 +17,7 @@
 - Scorpeon (https://github.com/uga-rosa/scorpeon.vim) (syntax highlighting).
 - Trouble (https://github.com/folke/trouble.nvim) (visualization of diagnostic messages).
 
-## Instalation
+## Installation
 With lasy (remove dependencies if already added elsewhere):
 
 ```
