@@ -3,7 +3,7 @@
 </p>
 
 ## Showcase
-![image](https://github.com/user-attachments/assets/2c3a7441-e073-4d86-a99e-0bac0c4f283a)
+![image](https://github.com/user-attachments/assets/fd0c1b99-f3b6-4bb5-a288-8aa1e53475c3)
 (Theme: https://github.com/Luxed/ayu-vim)
 
 ## Features
