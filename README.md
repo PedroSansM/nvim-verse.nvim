@@ -1,5 +1,5 @@
 <p align="center">
-	***This plugin is not supported by Epic Games***
+	This plugin is not supported by Epic Games
 </p>
 <br/><br/>
 
