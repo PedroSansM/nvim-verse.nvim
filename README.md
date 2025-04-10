@@ -2,13 +2,13 @@
 Theme: https://github.com/Luxed/ayu-vim
 
 ## Features
-- LSP (and text based) auto completion.
+- LSP (and text based) autocompletion.
 - Disgnostic messages.
 - Go to definition.
 - Syntax highlighting.
 
 ## Dependencies
-- Lsp-zero (https://github.com/VonHeikemen/lsp-zero.nvim) (auto completion).
+- Lsp-zero (https://github.com/VonHeikemen/lsp-zero.nvim) (autocompletion).
 - Scorpeon (https://github.com/uga-rosa/scorpeon.vim) (syntax highlighting).
 - Trouble (https://github.com/folke/trouble.nvim) (visualization of diagnostic messages).
 
