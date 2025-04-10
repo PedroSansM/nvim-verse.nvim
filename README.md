@@ -105,5 +105,5 @@ cmp.setup({
   })
 })
 ```
-## Know Limitations
+## Known Limitations
 - May not work for verse files inside another directory in the Content directory (i.e., all verse files should be directly inside Content).
