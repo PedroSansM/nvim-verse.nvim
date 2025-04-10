@@ -22,9 +22,6 @@ function StartVerseLSP()
 	})
 	if clientId ~= nil then
 		vim.lsp.buf_attach_client(0, clientId)
-		--if vim.lsp.buf_is_attached(0, clientId) then
-		--	print("Buffer attachment done")
-		--end
 	end
 end
 
