@@ -2,6 +2,14 @@
 
 
 ## Features
-- Lsp (and text based) autocompletion.
+- Lsp (and text based) auto completion.
 - Disgnostic messages.
 - Go to definition.
+- Syntax highlighting.
+
+## Dependencies
+- Lsp-zero (https://github.com/VonHeikemen/lsp-zero.nvim) (auto completion).
+- Scorpeon (https://github.com/uga-rosa/scorpeon.vim) (syntax highlighting).
+- Trouble (https://github.com/folke/trouble.nvim) (visualization of diagnostic messages).
+
+## Instalation
