@@ -13,7 +13,7 @@
 - Trouble (https://github.com/folke/trouble.nvim) (visualization of diagnostic messages).
 
 ## Instalation
-With lasy:
+With lasy (remove dependencies if already added elsewhere):
 
 ```
 {
@@ -78,4 +78,25 @@ With lasy:
         end
     }
 }
+```
+
+Lsp-zero setup example (don't show mappings setup):
+
+```
+local cmp = require('cmp')
+local cmp_action = require('lsp-zero').cmp_action()
+
+cmp.setup({
+	sources = {
+		{name = 'nvim_lsp'},
+		{name = 'buffer'} -- Text based auto completion is strongly recomended.
+	},
+	preselect = 'item',
+	completion = {
+		completeopt = 'menu,menuone,noinsert'
+	},
+	mapping = cmp.mapping.preset.insert({
+		['<TAB>'] = cmp.mapping.confirm({select = false}),
+  })
+})
 ```
