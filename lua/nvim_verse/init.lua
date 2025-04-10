@@ -10,7 +10,7 @@ M.StartVerseLSP = function()
     local projectName = vim.fs.basename(vim.fs.dirname(projectPath))
     local clientId = vim.lsp.start({
 		name = 'verse-lsp',
-		cmd = {NVimVerse._lspPath},
+		cmd = {M._lspPath},
 		workspace_folders = {
 			{uri = vim.uri_from_fname(M._verseProjectPath..projectName..'/Fortnite'), name = 'Fortnite'},
 			{uri = vim.uri_from_fname(M._verseProjectPath..projectName..'/UnrealEngine'), name = 'UnrealEngine'},
