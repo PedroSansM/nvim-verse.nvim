@@ -1,6 +1,7 @@
 local M = {}
 
 M.setup = function(opts)
+    print(vim.inspect(opts))
     M._lspPath = opts.lspPath
     M._verseProjectPath = opts.verseProjectPath
 end
