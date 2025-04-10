@@ -29,7 +29,7 @@ With lasy:
             {
                 'uga-rosa/scorpeon.vim',
                 init = function()
-                    vim.g.scorpeon_extensions_path = 'full/path/to/vscode/extensions/derectory'
+                    vim.g.scorpeon_extensions_path = 'full/path/to/vscode/extensions/directory'
                 end
             }, 
             {'vim-denops/denops.vim'},
