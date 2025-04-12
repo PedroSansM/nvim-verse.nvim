@@ -34,7 +34,7 @@ With lasy (remove dependencies if already added elsewhere):
             {
                 'uga-rosa/scorpeon.vim',
                 init = function()
-                    vim.g.scorpeon_extensions_path = 'full/path/to/vscode/extensions/directory'
+                    vim.g.scorpeon_extensions_path = 'full/path/to/vscode/extensions/directory' -- e.g. 'C:/Users/username/.vscode/entensions'
                 end
             }, 
             {'vim-denops/denops.vim'},
@@ -77,7 +77,7 @@ With lasy (remove dependencies if already added elsewhere):
         },
         config = function()
             require('nvim_verse').setup({
-                lspPath = 'full/path/to/epics/verse/lsp/executable',
+                lspPath = 'full/path/to/epics/verse/lsp/executable', -- e.g. 'C:/Users/username/.vscode/entensions/epicgames.verse-<version>/bin/Win64/verse-lsp'
                 verseProjectPath = 'full/path/to/saved/verseproject' -- e.g. 'C:/Users/username/AppData/Local/UnrealEditorFortnite/Saved/VerseProject'
             })
         end
