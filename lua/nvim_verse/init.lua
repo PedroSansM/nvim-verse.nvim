@@ -12,12 +12,12 @@ M.StartVerseLSP = function()
 		name = 'verse-lsp',
 		cmd = {M._lspPath},
 		workspace_folders = {
-			{uri = vim.uri_from_fname(M._verseProjectPath..projectName..'/Fortnite'), name = 'Fortnite'},
-			{uri = vim.uri_from_fname(M._verseProjectPath..projectName..'/UnrealEngine'), name = 'UnrealEngine'},
-			{uri = vim.uri_from_fname(M._verseProjectPath..projectName..'/Verse'), name = 'Verse'},
-			{uri = vim.uri_from_fname(M._verseProjectPath..projectName..'/'..projectName..'-Assets'), name = projectName..'/Assets'},
-			{uri = vim.uri_from_fname(M._verseProjectPath..projectName..'/vproject'), name = 'vproject'},
-			{uri = vim.uri_from_fname(projectPath), name = 'PROJECT'}
+			{uri = vim.uri_from_fname(M._verseProjectPath..'/'..projectName..'/Fortnite'), name = 'Fortnite'},
+			{uri = vim.uri_from_fname(M._verseProjectPath..'/'..projectName..'/UnrealEngine'), name = 'UnrealEngine'},
+			{uri = vim.uri_from_fname(M._verseProjectPath..'/'..projectName..'/Verse'), name = 'Verse'},
+			{uri = vim.uri_from_fname(M._verseProjectPath..'/'..projectName..'/'..projectName..'-Assets'), name = projectName..'/Assets'},
+			{uri = vim.uri_from_fname(M._verseProjectPath..'/'..projectName..'/vproject'), name = 'vproject'},
+			{uri = vim.uri_from_fname(projectPath), name = projectName}
 		}
 	})
 	if clientId ~= nil then
