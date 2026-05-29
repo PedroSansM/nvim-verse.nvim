@@ -40,7 +40,8 @@
 ;   (Receiver: Type).MethodName(...)
 (function_declaration
   name: (field_expression
-    field: (identifier) @function.method))
+    field: (identifier) @function.method
+    (#set! "priority" 200)))
 
 ; Constructor-like function (has <constructor> attribute)
 (function_declaration
@@ -56,7 +57,8 @@
 
 (function_call
   function: (field_expression
-    field: (identifier) @function.method.call))
+    field: (identifier) @function.method.call
+    (#set! "priority" 200)))
 
 ; Parametric types in type_hint position: awaitable(), awaitable(int), etc.
 (declaration
@@ -173,7 +175,8 @@
 (at_attributes
   "@" @attribute
   (macro_call
-    macro: (identifier) @attribute))
+    macro: (identifier) @attribute
+    (#set! "priority" 200)))
 
 (attributes
   ["<" ">"] @attribute)
@@ -242,6 +245,14 @@
 ; for Index->Item : Array — index variable on the LHS of ->
 (thin_arrow_expression
   lhs: (identifier) @variable)
+
+; for: Item : Collection — collection is a variable, not a type
+(macro_call
+  macro: (identifier) @_for
+  (#eq? @_for "for")
+  (block
+    (declaration
+      type_hint: (identifier) @variable)))
 
 ; Names imported in using { Name } or using { Name.Sub } (non-field_expression case)
 (macro_call
@@ -390,6 +401,7 @@
 ; Named argument name overrides @variable above
 (named_argument
   name: (identifier) @variable.parameter)
+
 (declaration rhs: (identifier) @variable)
 
 ; Bare identifier as expression-statement directly in a block (e.g. option result)
@@ -406,14 +418,16 @@
 (declaration
   type_hint: (function_call
     arguments: (argument_list
-      (identifier) @type)))
+      (identifier) @type
+      (#set! "priority" 200))))
 
 ; Type arguments inside array-of-tuple type hints: []tuple(A, B)
 (declaration
   type_hint: (array_container
     value: (function_call
       arguments: (argument_list
-        (identifier) @type))))
+        (identifier) @type
+        (#set! "priority" 200)))))
 
 ; RHS identifier on next line: Foo :=\n    Bar  (parsed as rhs: block (identifier))
 (declaration
@@ -426,3 +440,22 @@
   lhs: (macro_call
     (block
       (identifier) @variable)))
+
+; Supertype / interface in class(MySupertype) — must be LAST to override @variable
+(declaration
+  rhs: (macro_call
+    macro: (identifier) @_kw
+    (#match? @_kw "^(class|enum|interface|struct)$")
+    arguments: (argument_list
+      (identifier) @type
+      (#set! "priority" 200))))
+
+; Type alias rhs: Foo := tuple(A, B) — args are types, not variables
+(declaration
+  rhs: (block
+    (function_call
+      function: (identifier) @_fn
+      (#eq? @_fn "tuple")
+      arguments: (argument_list
+        (identifier) @type
+        (#set! "priority" 200)))))
