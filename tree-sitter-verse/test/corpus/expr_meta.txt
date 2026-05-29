@@ -1,0 +1,162 @@
+===============================
+Single level parenthesized
+===============================
+
+(1)
+
+---
+
+(source_file
+  (integer))
+
+===============================
+Nested level parenthesized
+===============================
+
+(((2)))
+
+---
+
+(source_file
+  (integer))
+
+===============================
+Parenthesized single attribute
+===============================
+
+(1<attr>)
+
+(1)<attr>
+
+---
+
+(source_file
+  (integer)
+  (attributes
+    (identifier))
+
+  (integer)
+  (attributes
+    (identifier)))
+
+===============================
+Parenthesized several attributes
+===============================
+
+(1<fst>)<snd>
+
+(1)<fst><snd>
+
+---
+
+(source_file
+  (integer)
+  (attributes
+    (identifier))
+  (attributes
+    (identifier))
+
+  (integer)
+  (attributes
+    (identifier)
+    (identifier)))
+
+===============================
+@attribute
+===============================
+
+@attr var: void = 0
+
+---
+
+(source_file
+  (declaration
+    pre_attributes: (at_attributes
+      (identifier))
+    lhs: (identifier)
+    type_hint: (identifier)
+    rhs: (integer)))
+
+===============================
+@attribute followed by function extension
+===============================
+
+@attr
+(__:int).Ext():void = {}
+
+---
+
+(source_file
+  (function_declaration
+    pre_attributes: (at_attributes
+      (identifier))
+    name: (field_expression
+      target: (declaration
+        lhs: (identifier)
+        type_hint: (identifier))
+      field: (identifier))
+    ret_type: (identifier)
+    (block)))
+
+===============================
+Comma separated group
+===============================
+
+1, 2, (3)
+
+---
+
+(source_file
+  (comma_separated_group
+    (integer)
+    (integer)
+    (integer)))
+
+===============================
+Comma separated group multiline
+===============================
+
+1,
+2,
+
+(3)
+
+
+---
+
+(source_file
+  (comma_separated_group
+    (integer)
+    (integer)
+    (integer)))
+
+===============================
+Field access
+===============================
+
+a.b
+
+---
+
+(source_file
+  (field_expression
+    target: (identifier)
+    field: (identifier)))
+
+===============================
+Chain field access
+===============================
+
+a.b.c()
+
+---
+
+(source_file
+  (function_call
+    function: (field_expression
+      target: (field_expression
+        target: (identifier)
+        field: (identifier))
+      field: (identifier))
+    arguments: (argument_list)))
+

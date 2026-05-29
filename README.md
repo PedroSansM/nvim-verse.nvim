@@ -10,11 +10,10 @@
 - LSP (and text based) autocompletion.
 - Diagnostic messages.
 - Go to definition.
-- Syntax highlighting.
+- Syntax highlighting with Tree-sitter.
 
 ## Dependencies
 - Lsp-zero (https://github.com/VonHeikemen/lsp-zero.nvim) (autocompletion).
-- Scorpeon (https://github.com/uga-rosa/scorpeon.vim) (syntax highlighting).
 - Trouble (https://github.com/folke/trouble.nvim) (visualization of diagnostic messages).
 
 ## Installation
@@ -31,12 +30,6 @@ With lasy (remove dependencies if already added elsewhere):
             {'hrsh7th/nvim-cmp'},
             {'L3MON4D3/LuaSnip'},
             {'hrsh7th/cmp-buffer'},
-            {
-                'uga-rosa/scorpeon.vim',
-                init = function()
-                    vim.g.scorpeon_extensions_path = 'full/path/to/vscode/extensions/directory' -- e.g. 'C:/Users/username/.vscode/entensions'
-                end
-            }, 
             {'vim-denops/denops.vim'},
             {
                'folke/trouble.nvim',
@@ -105,5 +98,7 @@ cmp.setup({
   })
 })
 ```
-## Known Limitations
-- May not work for verse files inside another directory in the Content directory (i.e., all verse files should be directly inside Content).
+## Tree-sitter
+<p align="center">
+	MADE WITH AI!
+</p>

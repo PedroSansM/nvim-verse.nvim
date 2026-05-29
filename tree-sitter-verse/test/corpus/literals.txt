@@ -1,0 +1,123 @@
+===============================
+Integer
+===============================
+
+0
+1000
+
+---
+
+(source_file
+  (integer)
+  (integer))
+
+===============================
+Integer (hex form)
+===============================
+
+0xAF
+0x100
+
+---
+
+(source_file
+  (integer)
+  (integer))
+
+===============================
+Integer suffix
+===============================
+
+0l
+
+---
+
+(source_file
+  (integer
+    (number_suffix)))
+
+===============================
+Float
+===============================
+
+0.0
+10.000
+
+---
+
+(source_file
+  (float)
+  (float))
+
+===============================
+Float exponent
+===============================
+
+0e0
+10e100
+10.0e100
+
+---
+
+(source_file
+  (float)
+  (float)
+  (float))
+
+===============================
+Float suffix
+===============================
+
+0.0l
+0e0l
+0.0e0l
+
+---
+
+(source_file
+  (float
+    (number_suffix))
+  (float
+    (number_suffix))
+  (float
+    (number_suffix)))
+
+===============================
+Basic path literal
+===============================
+
+/Github.com/Ghost
+
+---
+
+(source_file
+  (path_literal))
+
+===============================
+@ path literal
+===============================
+
+/Ghost@Github.com/Ghost
+
+---
+
+(source_file
+  (path_literal))
+
+===============================
+Path qualifiers
+===============================
+
+(/Localhost:)Var
+(local:)Var
+
+---
+
+(source_file
+  (identifier
+    (qualifier
+      (path_literal)))
+  (identifier
+    (qualifier
+      (identifier))))
+

@@ -1,0 +1,370 @@
+===============================
+'using' macro
+===============================
+
+using { /Github.com/Ghost }
+
+---
+
+(source_file
+  (macro_call
+    (identifier)
+    (block
+      (path_literal))))
+
+===============================
+'using' macro with dot form
+===============================
+
+using. /Github.com/Ghost
+
+---
+
+(source_file
+  (macro_call
+    (identifier)
+    (block
+      (path_literal))))
+
+===============================
+'option' macro
+===============================
+
+option{0}
+
+---
+
+(source_file
+  (macro_call
+    (identifier)
+    (block
+      (integer))))
+
+===============================
+Macro call parameter
+===============================
+
+class (supertype) {}
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    arguments: (argument_list
+      (identifier))
+    (block)))
+
+===============================
+Archetype curly block
+===============================
+
+some_type{
+  Field1 := true
+  Field2: int = 0
+}
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    (block
+      (declaration
+        lhs: (identifier)
+        rhs: (logic_literal))
+      (declaration
+        lhs: (identifier)
+        type_hint: (identifier)
+        rhs: (integer)))))
+
+===============================
+Macro call parameters
+===============================
+
+class (supertype, interface) {}
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    arguments: (argument_list
+      (identifier)
+      (identifier))
+    (block)))
+
+===============================
+Macro call parameters (indented block)
+===============================
+
+class (supertype, interface):
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    arguments: (argument_list
+      (identifier)
+      (identifier))
+    (block)))
+
+===============================
+Basic curly block
+===============================
+
+block {
+  0
+  1; 2
+  3
+}
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    (block
+      (integer)
+      (integer)
+      (integer)
+      (integer))))
+
+===============================
+Nested curly block
+===============================
+
+block {
+  1
+
+  block {
+    block {
+      2
+    }
+  }
+
+  3
+}
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    (block
+      (integer)
+      (macro_call
+        macro: (identifier)
+        (block
+          (macro_call
+            macro: (identifier)
+            (block
+              (integer)))))
+      (integer))))
+
+===============================
+Basic indent block
+===============================
+
+block:
+  0
+  1; 2
+  3
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    (block
+      (integer)
+      (integer)
+      (integer)
+      (integer))))
+
+===============================
+Basic indent block exit
+===============================
+
+block:
+  0
+  1
+2
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    (block
+      (integer)
+      (integer)))
+  (integer))
+
+===============================
+Basic indent block exit with Tab
+===============================
+
+block:
+	0
+	1
+2
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    (block
+      (integer)
+      (integer)))
+  (integer))
+
+===============================
+Nested indent block
+===============================
+
+block:
+  1
+
+  block:
+    block:
+      2
+
+  3
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    (block
+      (integer)
+      (macro_call
+        macro: (identifier)
+        (block
+          (macro_call
+            macro: (identifier)
+            (block
+              (integer)))))
+      (integer))))
+
+===============================
+Nested indent block with Tab
+===============================
+
+block:
+	1
+
+	block:
+		block:
+			2
+
+	3
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    (block
+      (integer)
+      (macro_call
+        macro: (identifier)
+        (block
+          (macro_call
+            macro: (identifier)
+            (block
+              (integer)))))
+      (integer))))
+
+===============================
+Nested indent block exit
+===============================
+
+block:
+  block:
+    block:
+      1
+2
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    (block
+      (macro_call
+        macro: (identifier)
+        (block
+          (macro_call
+            macro: (identifier)
+            (block
+              (integer)))))))
+  (integer))
+
+===============================
+Empty paren block
+===============================
+
+()
+
+---
+
+(source_file
+  (unit))
+
+===============================
+Paren block with one value 
+===============================
+
+(1)
+(2;)
+
+---
+
+(source_file
+  (integer)
+  (integer))
+
+===============================
+Paren block with various indents
+===============================
+
+(1
+
+2;3
+4
+
+   5)
+
+---
+
+(source_file
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer))
+
+===============================
+Comma separated paren block
+===============================
+
+(1, 2, 3)
+(1, 2;, 3)
+
+---
+
+(source_file
+  (comma_separated_group
+    (integer)
+    (integer)
+    (integer)))
+  (comma_separated_group
+    (integer)
+    (integer))
+    (ERROR)
+    (integer)))
+

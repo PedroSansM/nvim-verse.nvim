@@ -1,0 +1,30 @@
+# Build outputs
+build/
+*.so
+*.dll
+*.dylib
+*.a
+*.obj
+*.exp
+*.lib
+node_modules/
+
+# tree-sitter CLI build artifacts
+*.wasm
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+.venv/
+
+# Rust
+target/
+
+# Go
+go.sum
+
+# Editor
+.vscode/
+*.swp

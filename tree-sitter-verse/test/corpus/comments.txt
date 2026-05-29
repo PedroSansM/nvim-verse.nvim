@@ -1,0 +1,139 @@
+===============================
+Line comment
+===============================
+
+# Hello World
+0# Hello
+1
+
+---
+
+(source_file
+  (line_comment)
+  (integer)
+  (line_comment)
+  (integer))
+
+===============================
+Inline block comment
+===============================
+
+0<# in between #>+ 1
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (block_comment)
+    (integer)))
+
+===============================
+Inline block comment with '#' inside
+===============================
+
+0<# # in > between # #>+ 1
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (block_comment)
+    (integer)))
+
+===============================
+Multiline block comment
+===============================
+
+0<# in between
+on a couple
+lines #>+ 1
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (block_comment)
+    (integer)))
+
+===============================
+Nested block comments
+===============================
+
+0<# in between
+on <# nested #> a couple
+lines #>+ 1
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (block_comment)
+    (integer)))
+
+===============================
+Indent comment one line
+===============================
+
+<#> One line
+1
+
+---
+
+(source_file
+  (indent_comment)
+  (integer))
+
+===============================
+Indent comment one indented line
+===============================
+
+<#>
+  This is a one line story.
+2
+
+---
+
+(source_file
+  (indent_comment)
+  (integer))
+
+===============================
+Indent comment multi-line
+===============================
+
+<#>
+  This is a multi line story.
+
+  Here goes something.
+
+  1
+2
+
+---
+
+(source_file
+  (indent_comment)
+  (integer))
+
+===============================
+Indent comment multi-line with Tab
+===============================
+
+<#>
+	This is a multi line story.
+
+	Here goes something.
+
+	1
+2
+
+---
+
+(source_file
+  (indent_comment)
+  (integer))
+

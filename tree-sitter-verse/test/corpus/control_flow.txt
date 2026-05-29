@@ -1,0 +1,173 @@
+===============================
+'if' condition
+===============================
+
+if (100 > 0) {}
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    arguments: (argument_list
+      (binary_expression
+        lhs: (integer)
+        rhs: (integer)))
+    (block)))
+
+===============================
+'if' condition block
+===============================
+
+if (
+  100 > 0
+  50 > 10
+) {}
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    arguments: (argument_list
+      (binary_expression
+        lhs: (integer)
+        rhs: (integer))
+      (binary_expression
+        lhs: (integer)
+        rhs: (integer)))
+    (block)))
+
+===============================
+'else' branch
+===============================
+
+if {} else {}
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    (block))
+  (macro_call
+    (else_keyword)
+    (block)))
+
+==============================
+'else if' branch
+===============================
+
+if {
+} else if {}
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    (block))
+  (macro_call
+    (else_keyword)
+    macro: (identifier)
+    (block)))
+
+==============================
+'else if' branch with condition
+===============================
+
+if {
+} else if (1 > 0) {}
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    (block))
+  (macro_call
+    (else_keyword)
+    macro: (identifier)
+    arguments: (argument_list
+      (binary_expression
+        lhs: (integer)
+        rhs: (integer)))
+    (block)))
+
+==============================
+'else' multiline
+===============================
+
+if {}
+
+then {}
+
+else if {}
+
+else {}
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    (block))
+  (macro_call
+    macro: (identifier)
+    (block))
+  (macro_call
+    (else_keyword)
+    macro: (identifier)
+    (block))
+  (macro_call
+    (else_keyword)
+    (block)))
+
+===============================
+'case' matching
+===============================
+
+case(Number):
+  0 => '0'
+  1 =>
+    '1'
+  _ => {}
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    arguments: (argument_list
+      (identifier))
+    (block
+      (fat_arrow_expression
+        lhs: (integer)
+        rhs: (char))
+      (fat_arrow_expression
+        lhs: (integer)
+        rhs: (block
+          (char)))
+      (fat_arrow_expression
+        lhs: (identifier)
+        rhs: (block)))))
+
+===============================
+'for' loop iterate
+===============================
+
+for (Player:GetPlayer()) {}
+
+---
+
+(source_file
+  (macro_call
+    macro: (identifier)
+    arguments: (argument_list
+      (declaration
+        lhs: (identifier)
+        type_hint: (function_call
+          function: (identifier)
+          arguments: (argument_list))))
+    (block)))
+

@@ -1,0 +1,150 @@
+﻿===============================
+Barebones declaration
+===============================
+
+Var:1
+
+---
+
+(source_file
+  (declaration
+    lhs: (identifier)
+    type_hint: (integer)))
+
+===============================
+Declaration with type hint
+===============================
+
+Var: int = 0
+
+---
+
+(source_file
+  (declaration
+    lhs: (identifier)
+    type_hint: (identifier)
+    rhs: (integer)))
+
+===============================
+Variable declaration
+===============================
+
+var Var: int = 0
+
+---
+
+(source_file
+  (declaration
+    (var_keyword)
+    lhs: (identifier)
+    type_hint: (identifier)
+    rhs: (integer)))
+
+===============================
+Inferred declaration
+===============================
+
+Var := 0
+
+---
+
+(source_file
+  (declaration
+    lhs: (identifier)
+    rhs: (integer)))
+
+===============================
+Multiline declaration
+===============================
+
+Var :=
+  0
+
+---
+
+(source_file
+  (declaration
+    lhs: (identifier)
+    rhs: (block
+      (integer))))
+
+===============================
+Block declaration
+===============================
+
+Var := {
+  0
+}
+
+---
+
+(source_file
+  (declaration
+    lhs: (identifier)
+    rhs: (block
+     (integer))))
+
+===============================
+Declaration predecence to operators
+===============================
+
+Var := 1 or 2
+Var: void = 1 and 2
+var Var: int = Some of 1
+
+---
+
+(source_file
+  (declaration
+    lhs: (identifier)
+    rhs: (binary_expression
+     (integer)
+     (integer)))
+  (declaration
+    lhs: (identifier)
+    type_hint: (identifier)
+    rhs: (binary_expression
+     (integer)
+     (integer)))
+  (declaration
+    (var_keyword)
+    lhs: (identifier)
+    type_hint: (identifier)
+    rhs: (of_expression
+     (identifier)
+     (integer))))
+
+===============================
+'is:' block declaration
+===============================
+
+Entity is:
+  SomeType{}
+
+---
+
+(source_file
+  (is_declaration
+    lhs: (identifier)
+    (is_keyword)
+    rhs: (block
+      (macro_call
+        macro: (identifier)
+        (block)))))
+
+===============================
+Variable declaration with access specifier
+===============================
+
+var<private> Ready : logic = false
+
+---
+
+(source_file
+  (declaration
+    (var_keyword
+      (attributes
+        (identifier)))
+    lhs: (identifier)
+    type_hint: (identifier)
+    rhs: (logic_literal)))

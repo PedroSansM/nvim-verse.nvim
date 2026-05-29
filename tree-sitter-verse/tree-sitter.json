@@ -1,0 +1,33 @@
+{
+  "grammars": [
+    {
+      "name": "verse",
+      "camelcase": "Verse",
+      "scope": "source.verse",
+      "file-types": [
+        "verse"
+      ],
+      "highlights": [
+        "queries/highlights.scm"
+      ],
+      "locals": [
+        "queries/locals.scm"
+      ],
+      "content-regex": "(using\\s*\\{|<(public|private|internal)>)",
+      "injection-regex": "^verse$"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Verse (Epic Games's UEFN language) grammar for tree-sitter"
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true
+  }
+}

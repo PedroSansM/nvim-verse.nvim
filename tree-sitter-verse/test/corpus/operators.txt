@@ -1,0 +1,234 @@
+===============================
+'*' operator
+===============================
+
+1 * 1
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (integer)))
+
+===============================
+'/' operator
+===============================
+
+1 / 1
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (integer)))
+
+===============================
+'+' operator
+===============================
+
+1 + 1
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (integer)))
+
+===============================
+'-' operator
+===============================
+
+1 - 1
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (integer)))
+
+===============================
+'=' operator
+===============================
+
+1 = 1
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (integer)))
+
+===============================
+'<>' operator
+===============================
+
+1 <> 1
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (integer)))
+
+===============================
+'<' operator
+===============================
+
+1 < 1
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (integer)))
+
+===============================
+'>' operator
+===============================
+
+1 > 1
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (integer)))
+
+
+===============================
+'<=' operator
+===============================
+
+1 <= 1
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (integer)))
+
+===============================
+'>=' operator
+===============================
+
+1 <= 1
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (integer)))
+
+===============================
+'and' operator
+===============================
+
+1 and 1
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (integer)))
+
+===============================
+'or' operator
+===============================
+
+1 or 1
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (integer)))
+
+===============================
+Named operator/function conflict
+===============================
+
+1 and ()
+1 and (1)
+
+---
+
+(source_file
+  (binary_expression
+    (integer)
+    (unit))
+  (binary_expression
+    (integer)
+    (integer)))
+
+===============================
+'to' expression
+===============================
+
+1 to 1
+
+---
+
+(source_file
+  (to_expression
+    (integer)
+    (integer)))
+
+===============================
+'->' expression
+===============================
+
+1->1
+
+---
+
+(source_file
+  (thin_arrow_expression
+    (integer)
+    (integer)))
+
+===============================
+'=>' expression
+===============================
+
+1=>1
+
+---
+
+(source_file
+  (fat_arrow_expression
+    (integer)
+    (integer)))
+
+===============================
+'where' expression
+===============================
+
+Func(Param:p where p:type): void = {}
+
+---
+
+(source_file
+  (function_declaration
+    name: (identifier)
+    parameters: (where_expression
+      lhs: (declaration
+        lhs: (identifier)
+        type_hint: (identifier))
+      rhs: (declaration
+        lhs: (identifier)
+        type_hint: (identifier)))
+    ret_type: (identifier)
+    (block)))
+

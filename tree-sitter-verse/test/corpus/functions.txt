@@ -1,0 +1,311 @@
+===============================
+Empty function call
+===============================
+
+Clear()
+Clear[]
+
+---
+
+(source_file
+  (function_call
+    function: (identifier)
+    arguments: (argument_list))
+  (function_call
+    function: (identifier)
+    arguments: (argument_list)))
+
+===============================
+Single argument function call
+===============================
+
+Print(0)
+Print(1,)
+Print[2,]
+
+---
+
+(source_file
+  (function_call
+    function: (identifier)
+    arguments: (argument_list
+      (integer)))
+  (function_call
+    function: (identifier)
+    arguments: (argument_list
+      (integer)))
+  (function_call
+    function: (identifier)
+    arguments: (argument_list
+      (integer))))
+
+===============================
+Several arguments function call
+===============================
+
+Print(0, "Hello, World", 1)
+
+---
+
+(source_file
+  (function_call
+    function: (identifier)
+    arguments: (argument_list
+      (integer)
+      (string
+        (string_fragment))
+      (integer))))
+
+===============================
+Named arguments function call
+===============================
+
+Print(0, ?Debug := true)
+Print[1, ?Debug := true]
+
+---
+
+(source_file
+  (function_call
+    function: (identifier)
+    arguments: (argument_list
+      (integer)
+      (named_argument
+        name: (identifier)
+        (logic_literal))))
+  (function_call
+    function: (identifier)
+    arguments: (argument_list
+      (integer)
+      (named_argument
+        name: (identifier)
+        (logic_literal)))))
+
+===============================
+Barebones function declaration
+===============================
+
+MyFunc():void
+
+---
+
+(source_file
+  (function_declaration
+    name: (identifier)
+    ret_type: (identifier)))
+
+
+===============================
+No parameter function declaration
+===============================
+
+MyFunc<private>()<transacts><decides>: void ={}
+
+---
+
+(source_file
+  (function_declaration
+    name: (identifier)
+    attributes: (attributes
+      (identifier))
+    effects: (attributes
+      (identifier)
+      (identifier))
+    ret_type: (identifier)
+    (block)))
+
+===============================
+Function declaration specifier only
+===============================
+
+MyFunc<private>(): void
+
+---
+
+(source_file
+  (function_declaration
+    name: (identifier)
+    attributes: (attributes
+      (identifier))
+    ret_type: (identifier)))
+
+===============================
+Function declaration effect only
+===============================
+
+MyFunc()<suspends>: void
+
+---
+
+(source_file
+  (function_declaration
+    name: (identifier)
+    effects: (attributes
+      (identifier))
+    ret_type: (identifier)))
+
+===============================
+Function declaration without block
+===============================
+
+MyFunc(): int = 10
+
+---
+
+(source_file
+  (function_declaration
+    name: (identifier)
+    ret_type: (identifier)
+    (integer)))
+
+===============================
+Function declaration with multiline parameters
+===============================
+
+MyFunc(
+  Param1:int,
+): void ={}
+
+---
+
+(source_file
+  (function_declaration
+    name: (identifier)
+    parameters: (declaration
+      lhs: (identifier)
+      type_hint: (identifier))
+    ret_type: (identifier)
+    (block)))
+
+===============================
+Function declaration with curly block
+===============================
+
+MyFunc(): void ={
+  1
+}
+
+---
+
+(source_file
+  (function_declaration
+    name: (identifier)
+    ret_type: (identifier)
+    (block
+      (integer))))
+
+===============================
+Function declaration with indent block
+===============================
+
+MyFunc(): void =
+  1
+
+---
+
+(source_file
+  (function_declaration
+    name: (identifier)
+    ret_type: (identifier)
+    (block
+      (integer))))
+
+===============================
+'of' call expression
+===============================
+
+Some of true
+
+---
+
+(source_file
+  (of_expression
+    lhs: (identifier)
+    rhs: (logic_literal)))
+
+===============================
+'of' call chaining
+===============================
+
+A of B of true
+
+---
+
+(source_file
+  (of_expression
+    lhs: (identifier)
+    rhs: (of_expression
+      lhs: (identifier)
+      rhs: (logic_literal))))
+
+===============================
+'of' call expression with parens
+===============================
+
+Some of (1)
+Some of (1, 2)
+
+---
+
+(source_file
+  (of_expression
+    lhs: (identifier)
+    rhs: (integer))
+  (of_expression
+    lhs: (identifier)
+    rhs: (comma_separated_group
+      (integer)
+      (integer))))
+
+===============================
+'of' call expression with macro
+===============================
+
+Some of array{1}
+
+---
+
+(source_file
+  (of_expression
+    lhs: (identifier)
+    rhs: (macro_call
+      macro: (identifier)
+      (block
+        (integer)))))
+
+===============================
+'of' call with indent block ('of:' syntax)
+===============================
+
+SortBy of:
+  Arg1,
+  Arg2
+
+---
+
+(source_file
+  (of_expression
+    lhs: (identifier)
+    rhs: (block
+      (comma_separated_group
+        (identifier)
+        (identifier)))))
+
+===============================
+Function extension
+===============================
+
+(__:int).Ext():void = {}
+
+---
+
+(source_file
+  (function_declaration
+    name: (field_expression
+      target: (declaration
+        lhs: (identifier)
+        type_hint: (identifier))
+      field: (identifier))
+    ret_type: (identifier)
+    (block)))
+
