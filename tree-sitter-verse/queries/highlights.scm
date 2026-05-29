@@ -225,6 +225,13 @@
     macro: (identifier) @attribute
     (#set! "priority" 200)))
 
+; Type arguments in @editable_number(int), @editable_text(string), etc.
+(at_attributes
+  (macro_call
+    arguments: (argument_list
+      (identifier) @type
+      (#set! "priority" 200))))
+
 (attributes
   ["<" ">"] @attribute)
 
