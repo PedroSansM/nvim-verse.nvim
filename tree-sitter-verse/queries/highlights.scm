@@ -381,9 +381,11 @@
 (binary_expression (identifier) @variable)
 (unary_expression operand: (identifier) @variable)
 (postfix_expression operand: (identifier) @variable)
+(postfix_expression operator: "?" @operator)
 (argument_list (identifier) @variable)
 (argument_list (comma_separated_group (identifier) @variable))
 (comma_separated_group (identifier) @variable)
+(named_argument "?" @operator)
 (named_argument (identifier) @variable)
 ; Named argument name overrides @variable above
 (named_argument
