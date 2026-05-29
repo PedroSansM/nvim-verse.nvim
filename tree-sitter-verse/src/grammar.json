@@ -424,6 +424,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "at_expression"
+        },
+        {
+          "type": "SYMBOL",
           "name": "to_expression"
         },
         {
@@ -2221,6 +2225,35 @@
                   "name": "_expr"
                 }
               ]
+            }
+          }
+        ]
+      }
+    },
+    "at_expression": {
+      "type": "PREC_LEFT",
+      "value": 10,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "lhs",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_expr"
+            }
+          },
+          {
+            "type": "STRING",
+            "value": "at"
+          },
+          {
+            "type": "FIELD",
+            "name": "rhs",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_expr"
             }
           }
         ]

@@ -23,6 +23,7 @@ const PREC = {
   fat_arrow: 10,
   to: 10,
   of: 10,
+  at: 10,
   query: 9,
   opt: 9,
   not: 8,
@@ -181,6 +182,7 @@ module.exports = grammar({
       $.range_expression,
       $.fat_arrow_expression,
       $.of_expression,
+      $.at_expression,
       $.to_expression,
       $.where_expression,
     ),
@@ -461,6 +463,12 @@ module.exports = grammar({
           alias($.macro_block, $.block),
           $._expr,
         )),
+      )),
+    at_expression: $ =>
+      prec.left(PREC.at, seq(
+        field('lhs', $._expr),
+        'at',
+        field('rhs', $._expr),
       )),
     to_expression: $ =>
       binary_rule($, "to", PREC.to),
