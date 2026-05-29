@@ -3,8 +3,9 @@
 </p>
 
 ## Showcase
-![image](https://github.com/user-attachments/assets/fd0c1b99-f3b6-4bb5-a288-8aa1e53475c3)
-(Theme: https://github.com/Luxed/ayu-vim)
+<img width="584" height="886" alt="image" src="https://github.com/user-attachments/assets/1f2be6a3-a702-4b5f-a63a-11c8bcea7f58" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0aac8959-130d-42f9-b83a-bf61953accdf" />
+
 
 ## Features
 - LSP (and text based) autocompletion.
