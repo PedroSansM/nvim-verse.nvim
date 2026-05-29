@@ -70,11 +70,30 @@
     function: (field_expression
       field: (identifier) @type)))
 
+; Array-of-parametric type hint: []suspendable_closure(...), []awaitable(int), etc.
+(declaration
+  type_hint: (array_container
+    value: (function_call
+      function: (identifier) @type
+      (#set! "priority" 200))))
+
 ; Type arguments inside parametric type hints
 (declaration
   type_hint: (function_call
     arguments: (argument_list
       (identifier) @type)))
+
+; where clause type parameters: Foo where T: type, U: type
+; The lhs of each declaration is a type parameter name
+(where_expression
+  rhs: (declaration
+    lhs: (identifier) @type
+    (#set! "priority" 200)))
+(where_expression
+  rhs: (comma_separated_group
+    (declaration
+      lhs: (identifier) @type
+      (#set! "priority" 200))))
 
 ; ---------------------------------------------------------------------------
 ; Variables and constants
@@ -127,6 +146,32 @@
 (function_declaration
   ret_type: (identifier) @type)
 
+; Parametric return types: F() : resources(resource_type)
+(function_declaration
+  ret_type: (function_call
+    function: (identifier) @type
+    (#set! "priority" 200)))
+(function_declaration
+  ret_type: (function_call
+    arguments: (argument_list
+      (identifier) @type
+      (#set! "priority" 200))))
+
+; Nested parametric types in ret_type args: tuple(A, resources(B))
+(function_declaration
+  ret_type: (function_call
+    arguments: (argument_list
+      (function_call
+        function: (identifier) @type
+        (#set! "priority" 200)))))
+(function_declaration
+  ret_type: (function_call
+    arguments: (argument_list
+      (function_call
+        arguments: (argument_list
+          (identifier) @type
+          (#set! "priority" 200))))))
+
 ; Map key/value type annotations  [KeyType]ValueType
 (map_container
   key: (identifier) @type)
@@ -140,12 +185,14 @@
 ; Optional / failure-check type  ?SomeType
 (unary_expression
   operator: "?"
-  operand: (identifier) @type)
+  operand: (identifier) @type
+  (#set! "priority" 200))
 
 ; Type-check unary   :SomeType
 (unary_expression
   operator: ":"
-  operand: (identifier) @type)
+  operand: (identifier) @type
+  (#set! "priority" 200))
 
 ; Built-in primitive types
 ; (declaration
@@ -412,7 +459,14 @@
 ; Optional type hint override: Foo : ?type — must come after @variable patterns
 (declaration
   type_hint: (unary_expression
-    operand: (identifier) @type))
+    operand: (identifier) @type
+    (#set! "priority" 200)))
+
+; Optional return type: F() : ?type
+(function_declaration
+  ret_type: (unary_expression
+    operand: (identifier) @type
+    (#set! "priority" 200)))
 
 ; Type arguments inside parametric type hints — overrides @variable above
 (declaration
@@ -450,12 +504,75 @@
       (identifier) @type
       (#set! "priority" 200))))
 
-; Type alias rhs: Foo := tuple(A, B) — args are types, not variables
+; Type alias with tuple rhs: Foo<public> := tuple(A, B)
+; tuple is a language keyword, so matching on it is appropriate
+(declaration
+  lhs: (identifier) @type
+  rhs: (function_call
+    function: (identifier) @_fn
+    (#eq? @_fn "tuple"))
+  (#set! "priority" 200))
+(declaration
+  rhs: (function_call
+    function: (identifier) @_fn
+    (#eq? @_fn "tuple")
+    arguments: (argument_list
+      (identifier) @type))
+  (#set! "priority" 200))
+
+; Same but indented block form: Foo :=\n    tuple(A, B)
+(declaration
+  lhs: (identifier) @type
+  rhs: (block
+    (function_call
+      function: (identifier) @_fn
+      (#eq? @_fn "tuple")))
+  (#set! "priority" 200))
 (declaration
   rhs: (block
     (function_call
       function: (identifier) @_fn
       (#eq? @_fn "tuple")
       arguments: (argument_list
-        (identifier) @type
-        (#set! "priority" 200)))))
+        (identifier) @type)))
+  (#set! "priority" 200))
+
+; Parametric class declaration: resources<public>(resource_type: type) := class:
+; The function_call on lhs is the class name + type params
+(declaration
+  lhs: (function_call
+    function: (identifier) @type
+    (#set! "priority" 200))
+  rhs: (macro_call
+    macro: (identifier) @_kw
+    (#match? @_kw "^(class|enum|interface|struct)$")))
+
+; Type parameters in parametric class: (resource_type: type) — lhs is a type param name
+(declaration
+  lhs: (function_call
+    arguments: (argument_list
+      (declaration
+        lhs: (identifier) @type
+        (#set! "priority" 200))))
+  rhs: (macro_call
+    macro: (identifier) @_kw
+    (#match? @_kw "^(class|enum|interface|struct)$")))
+
+; Type alias declaration: closure<public>() := closure(tuple(), void)
+; When lhs is a function_call, the whole declaration is a type alias
+(declaration
+  lhs: (function_call
+    function: (identifier) @type
+    (#set! "priority" 200))
+  rhs: (function_call))
+(declaration
+  lhs: (function_call)
+  rhs: (function_call
+    function: (identifier) @type
+    (#set! "priority" 200)))
+(declaration
+  lhs: (function_call)
+  rhs: (function_call
+    arguments: (argument_list
+      (identifier) @type
+      (#set! "priority" 200))))
