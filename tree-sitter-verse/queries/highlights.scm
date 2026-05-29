@@ -246,6 +246,12 @@
 (of_expression
   lhs: (identifier) @function.call)
 
+; "at" array-access operator: Array at index
+(at_expression
+  "at" @keyword.operator)
+(at_expression
+  lhs: (identifier) @variable)
+
 ; ---------------------------------------------------------------------------
 ; Type/class definition keywords — used as the RHS of := declarations
 ; ---------------------------------------------------------------------------
