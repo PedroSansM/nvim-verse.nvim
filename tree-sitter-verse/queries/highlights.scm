@@ -413,7 +413,7 @@
 ; Concurrency / flow control macros
 (macro_call
   macro: (identifier) @keyword
-  (#match? @keyword "^(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|logic)$"))
+  (#match? @keyword "^\\s*(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|logic)$"))
 
 ; Conditional macros
 (macro_call
@@ -429,7 +429,14 @@
 ; Any remaining macro call gets function.macro treatment (excludes keyword macros)
 (macro_call
   macro: (identifier) @function.macro
-  (#not-match? @function.macro "^(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|logic|if|then|else|case|for|do|return|enum|module|class|interface|struct|tuple|type)$"))
+  (#not-match? @function.macro "^\\s*(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|logic|if|then|else|case|for|do|return|enum|module|class|interface|struct|tuple|type)$"))
+
+; The ':' in indent-block macro calls (e.g. spawn:, if:, logic:).
+; The external "macro:" token is zero-length at the position after ':'; use
+; #offset! to shift the highlight back one column onto the actual ':' char.
+(macro_call
+  (block "macro:" @keyword)
+  (#offset! @keyword 0 -1 0 0))
 
 ; ---------------------------------------------------------------------------
 ; Statement keywords

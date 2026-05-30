@@ -275,6 +275,33 @@ bool tree_sitter_verse_external_scanner_scan(
         return true;
     }
 
+    /* Check for "macro:" colon token before the initial mark_end so that
+     * both mark_end calls (start anchor + end anchor) correctly give the
+     * token a single-character span for highlight captures. */
+    if (valid_symbols[OPEN_INDENT_BLOCK_COLON] && lexer->lookahead == ':') {
+        lexer->mark_end(lexer);        /* anchor start at ':' */
+        lexer->advance(lexer, false);
+        lexer->mark_end(lexer);        /* anchor end after ':' */
+        for (;;) {
+            if (lexer->lookahead == ' ') {
+                lexer->advance(lexer, true);
+                continue;
+            } else if (lexer->lookahead == '\r' || lexer->lookahead == '\n') {
+                if (lexer->lookahead == '\r') {
+                    lexer->advance(lexer, true);
+                }
+                if (lexer->lookahead == '\n') {
+                    lexer->advance(lexer, true);
+                }
+                lexer->result_symbol = OPEN_INDENT_BLOCK_COLON;
+                return true;
+            } else {
+                break;
+            }
+        }
+        return false;
+    }
+
     lexer->mark_end(lexer);
 
     uint16_t prev_indent_len;
@@ -341,31 +368,6 @@ bool tree_sitter_verse_external_scanner_scan(
         } else {
             break;
         }
-    }
-
-    if (valid_symbols[OPEN_INDENT_BLOCK_COLON]
-            && !met_newline
-            && lexer->lookahead == ':') {
-        lexer->advance(lexer, false);
-        for (;;) {
-            if (lexer->lookahead == ' ') {
-                lexer->advance(lexer, true);
-                continue;
-            } else if (lexer->lookahead == '\r' || lexer->lookahead == '\n') {
-                if (lexer->lookahead == '\r') {
-                    lexer->advance(lexer, true);
-                }
-                if (lexer->lookahead == '\n') {
-                    lexer->advance(lexer, true);
-                }
-                lexer->mark_end(lexer);
-                lexer->result_symbol = OPEN_INDENT_BLOCK_COLON;
-                return true;
-            } else {
-                break;
-            }
-        }
-        return false;
     }
 
     if (valid_symbols[INDENT] && !error_recovery) {
