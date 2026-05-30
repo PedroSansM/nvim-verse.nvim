@@ -83,6 +83,20 @@
     arguments: (argument_list
       (identifier) @type)))
 
+; Qualified type arguments inside parametric type hints: tuple(Module.type_name)
+(declaration
+  type_hint: (function_call
+    arguments: (argument_list
+      (field_expression
+        target: (identifier) @type
+        (#set! "priority" 200)))))
+(declaration
+  type_hint: (function_call
+    arguments: (argument_list
+      (field_expression
+        field: (identifier) @type
+        (#set! "priority" 200)))))
+
 ; where clause type parameters: Foo where T: type, U: type
 ; The lhs of each declaration is a type parameter name
 (where_expression
@@ -94,6 +108,19 @@
     (declaration
       lhs: (identifier) @type
       (#set! "priority" 200))))
+
+; Type constraint declaration: T: type — where-clause type parameter
+; Matches any declaration where type_hint is the Verse "type" keyword
+(declaration
+  lhs: (identifier) @type
+  type_hint: (identifier) @_th
+  (#eq? @_th "type")
+  (#set! "priority" 200))
+
+; Qualifier keywords: (local:), (public:), (private:), (internal:), etc.
+(qualifier
+  (identifier) @keyword
+  (#set! "priority" 200))
 
 ; ---------------------------------------------------------------------------
 ; Variables and constants
@@ -120,8 +147,9 @@
 (set_expression
   lhs: (field_expression
     field: (identifier) @variable.member))
+; rhs: field doesn't propagate through _inline_body inline rule — use child match
 (set_expression
-  rhs: (identifier) @variable)
+  (identifier) @variable)
 
 ; Receiver in extension method — (Self: MyClass)
 (function_declaration
@@ -137,6 +165,16 @@
 ; Type hints in declarations
 (declaration
   type_hint: (identifier) @type)
+
+; Type hint as qualified path: Bar: Module.type_name
+(declaration
+  type_hint: (field_expression
+    target: (identifier) @type
+    (#set! "priority" 200)))
+(declaration
+  type_hint: (field_expression
+    field: (identifier) @type
+    (#set! "priority" 200)))
 
 ; Type hint in parentheses (field query broken for paren case): Foo : (\n  bar) = ...
 ; Match ":" "(" identifier ")" structurally to avoid capturing lhs-in-parens
@@ -258,6 +296,8 @@
   "at" @keyword.operator)
 (at_expression
   lhs: (identifier) @variable)
+(at_expression
+  rhs: (identifier) @variable)
 
 ; ---------------------------------------------------------------------------
 ; Type/class definition keywords — used as the RHS of := declarations
@@ -314,6 +354,24 @@
     (declaration
       type_hint: (identifier) @variable)))
 
+; for: Item : Module.Collection — qualified collection, neither part is a type
+(macro_call
+  macro: (identifier) @_for
+  (#eq? @_for "for")
+  (block
+    (declaration
+      type_hint: (field_expression
+        target: (identifier) @variable
+        (#set! "priority" 200)))))
+(macro_call
+  macro: (identifier) @_for
+  (#eq? @_for "for")
+  (block
+    (declaration
+      type_hint: (field_expression
+        field: (identifier) @variable.member
+        (#set! "priority" 200)))))
+
 ; Names imported in using { Name } or using { Name.Sub } (non-field_expression case)
 (macro_call
   macro: (identifier) @_using
@@ -355,7 +413,7 @@
 ; Concurrency / flow control macros
 (macro_call
   macro: (identifier) @keyword
-  (#match? @keyword "^(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not)$"))
+  (#match? @keyword "^(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|logic)$"))
 
 ; Conditional macros
 (macro_call
@@ -371,7 +429,7 @@
 ; Any remaining macro call gets function.macro treatment (excludes keyword macros)
 (macro_call
   macro: (identifier) @function.macro
-  (#not-match? @function.macro "^(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|if|then|else|case|for|do|return|enum|module|class|interface|struct|tuple|type)$"))
+  (#not-match? @function.macro "^(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|logic|if|then|else|case|for|do|return|enum|module|class|interface|struct|tuple|type)$"))
 
 ; ---------------------------------------------------------------------------
 ; Statement keywords
@@ -475,6 +533,32 @@
     operand: (identifier) @type
     (#set! "priority" 200)))
 
+; Optional qualified type hint: Foo : ?Module.type_name
+(declaration
+  type_hint: (unary_expression
+    operand: (field_expression
+      target: (identifier) @type
+      (#set! "priority" 200))))
+(declaration
+  type_hint: (unary_expression
+    operand: (field_expression
+      field: (identifier) @type
+      (#set! "priority" 200))))
+
+; Optional doubly-qualified type hint: Foo : ?A.B.type_name
+(declaration
+  type_hint: (unary_expression
+    operand: (field_expression
+      target: (field_expression
+        target: (identifier) @type
+        (#set! "priority" 200)))))
+(declaration
+  type_hint: (unary_expression
+    operand: (field_expression
+      target: (field_expression
+        field: (identifier) @type
+        (#set! "priority" 200)))))
+
 ; Optional return type: F() : ?type
 (function_declaration
   ret_type: (unary_expression
@@ -487,6 +571,36 @@
     arguments: (argument_list
       (identifier) @type
       (#set! "priority" 200))))
+
+; Nested type args: event(tuple(T, U)) — depth-2 function_call inside type_hint
+(declaration
+  type_hint: (function_call
+    arguments: (argument_list
+      (function_call
+        arguments: (argument_list
+          (identifier) @type
+          (#set! "priority" 200))))))
+
+; Type constructor rhs: X := event(tuple(T, U)){} — any parametric type call
+(declaration
+  rhs: (block
+    (macro_call
+      arguments: (argument_list
+        (function_call
+          arguments: (argument_list
+            (identifier) @type
+            (#set! "priority" 200)))))))
+
+; Standalone type constructor call: event(tuple(T, U)){} parsed outside rhs block
+; (occurs in error-recovery context where the rhs block ends up empty)
+(macro_call
+  macro: (identifier) @_m
+  (#match? @_m "^(event|option|array|map)$")
+  arguments: (argument_list
+    (function_call
+      arguments: (argument_list
+        (identifier) @type
+        (#set! "priority" 200)))))
 
 ; Type arguments inside array-of-tuple type hints: []tuple(A, B)
 (declaration

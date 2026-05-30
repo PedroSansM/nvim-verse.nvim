@@ -327,6 +327,17 @@ bool tree_sitter_verse_external_scanner_scan(
             if (!check_other_lines) {
                 break;
             }
+        } else if (lexer->lookahead == '#') {
+            /* `#` starts a comment.  Return false so tree-sitter restores the
+             * lexer position and lets the regular lexer produce a line_comment
+             * or indent_comment extra node (preserving highlight captures).
+             * The scanner is re-invoked after the comment is consumed:
+             *   - If a real statement follows, INDENT fires normally.
+             *   - If only comments/EOF follow, indent_len stays 0 →
+             *     CLOSE_INDENT_BLOCK fires, correctly closing an empty block.
+             * This handles both "comment-only block body" and
+             * "comment before real statement" without eating comment text. */
+            return false;
         } else {
             break;
         }
