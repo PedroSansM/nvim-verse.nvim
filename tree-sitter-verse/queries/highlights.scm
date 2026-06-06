@@ -466,6 +466,34 @@
     (declaration
       type_hint: (identifier) @variable)))
 
+; for: Index->Item : Collection — collection in thin-arrow form
+(macro_call
+  macro: (identifier) @_for
+  (#eq? @_for "for")
+  (block
+    (thin_arrow_expression
+      rhs: (declaration
+        type_hint: (identifier) @variable
+        (#set! "priority" 300)))))
+(macro_call
+  macro: (identifier) @_for
+  (#eq? @_for "for")
+  (block
+    (thin_arrow_expression
+      rhs: (declaration
+        type_hint: (field_expression
+          target: (identifier) @variable
+          (#set! "priority" 300))))))
+(macro_call
+  macro: (identifier) @_for
+  (#eq? @_for "for")
+  (block
+    (thin_arrow_expression
+      rhs: (declaration
+        type_hint: (field_expression
+          field: (identifier) @variable.member
+          (#set! "priority" 300))))))
+
 ; for: Item : Module.Collection — qualified collection, neither part is a type
 (macro_call
   macro: (identifier) @_for
