@@ -932,6 +932,27 @@
       (field_expression
         field: (identifier) @type
         (#set! "priority" 200)))))
+; Optional type in rhs macro_call args: event(?Module.type_name){}
+(declaration
+  rhs: (macro_call
+    arguments: (argument_list
+      (unary_expression
+        operand: (identifier) @type
+        (#set! "priority" 200)))))
+(declaration
+  rhs: (macro_call
+    arguments: (argument_list
+      (unary_expression
+        operand: (field_expression
+          target: (identifier) @type
+          (#set! "priority" 200))))))
+(declaration
+  rhs: (macro_call
+    arguments: (argument_list
+      (unary_expression
+        operand: (field_expression
+          field: (identifier) @type
+          (#set! "priority" 200))))))
 ; Depth-2 function name in rhs macro_call: event(signalable(...)){ }
 (declaration
   rhs: (macro_call
