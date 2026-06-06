@@ -60,6 +60,17 @@
     field: (identifier) @function.method.call
     (#set! "priority" 200)))
 
+; Struct constructor with qualified name: Module.TypeName{...}
+; The macro is a field_expression — both module prefix and constructor name are @function.macro.
+(macro_call
+  macro: (field_expression
+    target: (identifier) @function.macro
+    (#set! "priority" 200)))
+(macro_call
+  macro: (field_expression
+    field: (identifier) @function.macro
+    (#set! "priority" 200)))
+
 ; Parametric types in type_hint position: awaitable(), awaitable(int), etc.
 (declaration
   type_hint: (function_call
@@ -75,6 +86,18 @@
   type_hint: (array_container
     value: (function_call
       function: (identifier) @type
+      (#set! "priority" 200))))
+
+; Array of qualified type hint: []Module.type_name
+(declaration
+  type_hint: (array_container
+    value: (field_expression
+      target: (identifier) @type
+      (#set! "priority" 200))))
+(declaration
+  type_hint: (array_container
+    value: (field_expression
+      field: (identifier) @type
       (#set! "priority" 200))))
 
 ; Type arguments inside parametric type hints
@@ -166,7 +189,7 @@
 (declaration
   type_hint: (identifier) @type)
 
-; Type hint as qualified path: Bar: Module.type_name
+; Type hint as qualified path: Bar: Module.type_name  (depth 1)
 (declaration
   type_hint: (field_expression
     target: (identifier) @type
@@ -175,6 +198,67 @@
   type_hint: (field_expression
     field: (identifier) @type
     (#set! "priority" 200)))
+
+; Type hint as doubly-qualified path: Bar: A.B.type_name  (depth 2)
+; C and D in A.B.C.D are covered by depth-1 patterns above; only A and B need new patterns.
+(declaration
+  type_hint: (field_expression
+    target: (field_expression
+      target: (identifier) @type
+      (#set! "priority" 200))))
+(declaration
+  type_hint: (field_expression
+    target: (field_expression
+      field: (identifier) @type
+      (#set! "priority" 200))))
+
+; Depth 3: A.B.C.D.type_name — A and B are new; C/D covered above.
+(declaration
+  type_hint: (field_expression
+    target: (field_expression
+      target: (field_expression
+        target: (identifier) @type
+        (#set! "priority" 200)))))
+(declaration
+  type_hint: (field_expression
+    target: (field_expression
+      target: (field_expression
+        field: (identifier) @type
+        (#set! "priority" 200)))))
+
+; Depth 4: A.B.C.D.E.type_name — A and B are new; C/D/E covered above.
+(declaration
+  type_hint: (field_expression
+    target: (field_expression
+      target: (field_expression
+        target: (field_expression
+          target: (identifier) @type
+          (#set! "priority" 200))))))
+(declaration
+  type_hint: (field_expression
+    target: (field_expression
+      target: (field_expression
+        target: (field_expression
+          field: (identifier) @type
+          (#set! "priority" 200))))))
+
+; Depth 5: A.B.C.D.E.F.type_name — A and B are new; C/D/E/F covered above.
+(declaration
+  type_hint: (field_expression
+    target: (field_expression
+      target: (field_expression
+        target: (field_expression
+          target: (field_expression
+            target: (identifier) @type
+            (#set! "priority" 200)))))))
+(declaration
+  type_hint: (field_expression
+    target: (field_expression
+      target: (field_expression
+        target: (field_expression
+          target: (field_expression
+            field: (identifier) @type
+            (#set! "priority" 200)))))))
 
 ; Type hint in parentheses (field query broken for paren case): Foo : (\n  bar) = ...
 ; Match ":" "(" identifier ")" structurally to avoid capturing lhs-in-parens
@@ -346,6 +430,21 @@
 (thin_arrow_expression
   lhs: (identifier) @variable)
 
+; for: FloorIndex := 0..LastFloorIndex — upper bound of range is a variable
+(macro_call
+  macro: (identifier) @_for
+  (#eq? @_for "for")
+  (block
+    (range_expression
+      rhs: (identifier) @variable)))
+(macro_call
+  macro: (identifier) @_for
+  (#eq? @_for "for")
+  (block
+    (range_expression
+      lhs: (range_expression
+        rhs: (identifier) @variable))))
+
 ; for: Item : Collection — collection is a variable, not a type
 (macro_call
   macro: (identifier) @_for
@@ -362,7 +461,7 @@
     (declaration
       type_hint: (field_expression
         target: (identifier) @variable
-        (#set! "priority" 200)))))
+        (#set! "priority" 300)))))
 (macro_call
   macro: (identifier) @_for
   (#eq? @_for "for")
@@ -370,7 +469,35 @@
     (declaration
       type_hint: (field_expression
         field: (identifier) @variable.member
-        (#set! "priority" 200)))))
+        (#set! "priority" 300)))))
+
+; for: Item : A.B.C — deeper qualified collection path, still variables
+(macro_call
+  macro: (identifier) @_for
+  (#eq? @_for "for")
+  (block
+    (declaration
+      type_hint: (field_expression
+        target: (field_expression
+          target: (identifier) @variable
+          (#set! "priority" 300))))))
+(macro_call
+  macro: (identifier) @_for
+  (#eq? @_for "for")
+  (block
+    (declaration
+      type_hint: (field_expression
+        target: (field_expression
+          field: (identifier) @variable.member
+          (#set! "priority" 300))))))
+(macro_call
+  macro: (identifier) @_for
+  (#eq? @_for "for")
+  (block
+    (declaration
+      type_hint: (field_expression
+        field: (identifier) @variable.member
+        (#set! "priority" 300)))))
 
 ; Names imported in using { Name } or using { Name.Sub } (non-field_expression case)
 (macro_call
@@ -382,12 +509,58 @@
 ; ERROR recovery — loose tokens when the root ERROR wraps the whole file
 ; ---------------------------------------------------------------------------
 
+; for: / do: blocks collapse in ERROR context: the for: block becomes empty
+; and the binding declaration (SlotItem : SomeCollection) ends up as a sibling
+; in the parent block. The type_hint identifier fires @type from the generic
+; rule. Override with @variable when the type_hint starts with an uppercase
+; letter AND the declaration has no rhs — in Verse, for-loop bindings have no
+; rhs, while variable declarations with PascalCase types always have one.
+(block
+  (declaration
+    lhs: _
+    type_hint: (identifier) @variable
+    !rhs
+    (#match? @variable "^[A-Z]")
+    (#set! "priority" 250)))
+
 ; "Name<attrs> := class/module/etc." inside root ERROR (no anchors — attributes may intervene)
 (ERROR
   (identifier) @type
+  .
+  (attributes)
+  .
   ":="
+  .
   (identifier) @keyword
-  (#match? @keyword "^(module|class|enum|interface|struct|tuple|type)$"))
+  (#match? @keyword "^(module|class|enum|interface|struct|tuple|type)$")
+  (#set! "priority" 200))
+; Without attributes
+(ERROR
+  (identifier) @type
+  .
+  ":="
+  .
+  (identifier) @keyword
+  (#match? @keyword "^(module|class|enum|interface|struct|tuple|type)$")
+  (#set! "priority" 200))
+
+; case (State): in ERROR context — bare case identifier + argument_list sibling.
+; Override any spurious @type with @variable at higher priority.
+(ERROR
+  (identifier) @_case
+  .
+  (argument_list
+    (identifier) @variable
+    (#set! "priority" 300))
+  (#eq? @_case "case"))
+
+; class(plugin) in ERROR context: class/enum/interface/struct identifier followed by argument_list
+(ERROR
+  (identifier) @_kw
+  (#match? @_kw "^(class|enum|interface|struct)$")
+  (argument_list
+    (identifier) @type
+    (#set! "priority" 200)))
 
 ; Function name inside ERROR: identifier immediately followed by attributes then "("
 (ERROR
@@ -405,6 +578,18 @@
 ; Any identifier that IS a type-defining keyword, regardless of context
 ((identifier) @keyword
   (#match? @keyword "^(module|class|enum|interface|struct|tuple|type)$"))
+
+; Any identifier that IS a macro keyword, regardless of context (fires in ERROR recovery
+; where the macro_call wrapper is absent; overridden by specific macro_call patterns below)
+((identifier) @keyword
+  (#match? @keyword "^(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|logic)$")
+  (#set! "priority" 50))
+((identifier) @keyword.conditional
+  (#match? @keyword.conditional "^(if|then|else|case)$")
+  (#set! "priority" 50))
+((identifier) @keyword.repeat
+  (#match? @keyword.repeat "^(for|loop|do)$")
+  (#set! "priority" 50))
 
 ; ---------------------------------------------------------------------------
 ; Macro keywords
@@ -431,12 +616,24 @@
   macro: (identifier) @function.macro
   (#not-match? @function.macro "^\\s*(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|logic|if|then|else|case|for|do|return|enum|module|class|interface|struct|tuple|type)$"))
 
-; The ':' in indent-block macro calls (e.g. spawn:, if:, logic:).
+; The ':' in indent-block macro calls.
 ; The external "macro:" token is zero-length at the position after ':'; use
-; #offset! to shift the highlight back one column onto the actual ':' char.
+; #offset! per category so the ':' inherits the same highlight as the macro name.
 (macro_call
+  macro: (identifier) @_kk
   (block "macro:" @keyword)
+  (#match? @_kk "^\\s*(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|logic)$")
   (#offset! @keyword 0 -1 0 0))
+(macro_call
+  macro: (identifier) @_kc
+  (block "macro:" @keyword.conditional)
+  (#match? @_kc "^\\s*(if|then|else|case)$")
+  (#offset! @keyword.conditional 0 -1 0 0))
+(macro_call
+  macro: (identifier) @_kr
+  (block "macro:" @keyword.repeat)
+  (#match? @_kr "^\\s*(for|loop|do)$")
+  (#offset! @keyword.repeat 0 -1 0 0))
 
 ; ---------------------------------------------------------------------------
 ; Statement keywords
@@ -597,6 +794,43 @@
           arguments: (argument_list
             (identifier) @type
             (#set! "priority" 200)))))))
+(declaration
+  rhs: (block
+    (macro_call
+      arguments: (argument_list
+        (function_call
+          arguments: (argument_list
+            (field_expression
+              target: (identifier) @type
+              (#set! "priority" 200))))))))
+(declaration
+  rhs: (block
+    (macro_call
+      arguments: (argument_list
+        (function_call
+          arguments: (argument_list
+            (field_expression
+              field: (identifier) @type
+              (#set! "priority" 200))))))))
+
+; Type constructor directly on rhs (no wrapping block): X : event(T) = event(T){}
+(declaration
+  rhs: (macro_call
+    arguments: (argument_list
+      (identifier) @type
+      (#set! "priority" 200))))
+(declaration
+  rhs: (macro_call
+    arguments: (argument_list
+      (field_expression
+        target: (identifier) @type
+        (#set! "priority" 200)))))
+(declaration
+  rhs: (macro_call
+    arguments: (argument_list
+      (field_expression
+        field: (identifier) @type
+        (#set! "priority" 200)))))
 
 ; Standalone type constructor call: event(tuple(T, U)){} parsed outside rhs block
 ; (occurs in error-recovery context where the rhs block ends up empty)
@@ -608,6 +842,24 @@
       arguments: (argument_list
         (identifier) @type
         (#set! "priority" 200)))))
+(macro_call
+  macro: (identifier) @_m
+  (#match? @_m "^(event|option|array|map)$")
+  arguments: (argument_list
+    (function_call
+      arguments: (argument_list
+        (field_expression
+          target: (identifier) @type
+          (#set! "priority" 200))))))
+(macro_call
+  macro: (identifier) @_m
+  (#match? @_m "^(event|option|array|map)$")
+  arguments: (argument_list
+    (function_call
+      arguments: (argument_list
+        (field_expression
+          field: (identifier) @type
+          (#set! "priority" 200))))))
 
 ; Type arguments inside array-of-tuple type hints: []tuple(A, B)
 (declaration
@@ -637,6 +889,25 @@
     arguments: (argument_list
       (identifier) @type
       (#set! "priority" 200))))
+
+; Parametric supertype: class(awaitable(T)), class(suspendable_closure(T)), etc.
+(declaration
+  rhs: (macro_call
+    macro: (identifier) @_kw
+    (#match? @_kw "^(class|enum|interface|struct)$")
+    arguments: (argument_list
+      (function_call
+        function: (identifier) @type
+        (#set! "priority" 200)))))
+(declaration
+  rhs: (macro_call
+    macro: (identifier) @_kw
+    (#match? @_kw "^(class|enum|interface|struct)$")
+    arguments: (argument_list
+      (function_call
+        arguments: (argument_list
+          (identifier) @type
+          (#set! "priority" 200))))))
 
 ; Type alias with tuple rhs: Foo<public> := tuple(A, B)
 ; tuple is a language keyword, so matching on it is appropriate
