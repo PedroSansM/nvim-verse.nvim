@@ -81,6 +81,19 @@
     function: (field_expression
       field: (identifier) @type)))
 
+; Optional parametric type hint: ?castable_concrete_subtype(entity)
+(declaration
+  type_hint: (unary_expression
+    operand: (function_call
+      function: (identifier) @type
+      (#set! "priority" 200))))
+(declaration
+  type_hint: (unary_expression
+    operand: (function_call
+      arguments: (argument_list
+        (identifier) @type
+        (#set! "priority" 200)))))
+
 ; Array-of-parametric type hint: []suspendable_closure(...), []awaitable(int), etc.
 (declaration
   type_hint: (array_container
