@@ -523,6 +523,66 @@
     (#match? @variable "^[A-Z]")
     (#set! "priority" 250)))
 
+; for: multi-binding in ERROR node context (where declarations land inside an ERROR node,
+; not a block). Pattern 1: first binding — immediately after empty for: block.
+; Pattern 2: last binding — immediately before do: macro_call.
+; Each has an (identifier) variant and a (field_expression) variant for qualified collections.
+(ERROR
+  (macro_call
+    macro: (identifier) @_for
+    (#eq? @_for "for")
+    (block))
+  .
+  (declaration
+    type_hint: (identifier) @variable
+    (#set! "priority" 300)))
+(ERROR
+  (macro_call
+    macro: (identifier) @_for
+    (#eq? @_for "for")
+    (block))
+  .
+  (declaration
+    type_hint: (field_expression
+      target: (identifier) @variable
+      (#set! "priority" 300))))
+(ERROR
+  (macro_call
+    macro: (identifier) @_for
+    (#eq? @_for "for")
+    (block))
+  .
+  (declaration
+    type_hint: (field_expression
+      field: (identifier) @variable.member
+      (#set! "priority" 300))))
+(ERROR
+  (declaration
+    type_hint: (identifier) @variable
+    (#set! "priority" 300))
+  .
+  (macro_call
+    macro: (identifier) @_do
+    (#eq? @_do "do")))
+(ERROR
+  (declaration
+    type_hint: (field_expression
+      target: (identifier) @variable
+      (#set! "priority" 300)))
+  .
+  (macro_call
+    macro: (identifier) @_do
+    (#eq? @_do "do")))
+(ERROR
+  (declaration
+    type_hint: (field_expression
+      field: (identifier) @variable.member
+      (#set! "priority" 300)))
+  .
+  (macro_call
+    macro: (identifier) @_do
+    (#eq? @_do "do")))
+
 ; "Name<attrs> := class/module/etc." inside root ERROR (no anchors — attributes may intervene)
 (ERROR
   (identifier) @type
