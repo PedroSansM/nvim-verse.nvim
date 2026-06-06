@@ -845,6 +845,47 @@
           (identifier) @type
           (#set! "priority" 200))))))
 
+; Depth-2 function name inside type_hint: event(signalable(...))
+(declaration
+  type_hint: (function_call
+    arguments: (argument_list
+      (function_call
+        function: (identifier) @type
+        (#set! "priority" 200)))))
+
+; Depth-3 function name inside type_hint: event(tuple(...signalable(...)))
+(declaration
+  type_hint: (function_call
+    arguments: (argument_list
+      (function_call
+        arguments: (argument_list
+          (function_call
+            function: (identifier) @type
+            (#set! "priority" 200)))))))
+
+; Depth-3 identifier args inside type_hint: event(tuple(signalable(T)))
+(declaration
+  type_hint: (function_call
+    arguments: (argument_list
+      (function_call
+        arguments: (argument_list
+          (function_call
+            arguments: (argument_list
+              (identifier) @type
+              (#set! "priority" 200))))))))
+
+; Depth-4 function name inside type_hint: event(tuple(...signalable(tuple())))
+(declaration
+  type_hint: (function_call
+    arguments: (argument_list
+      (function_call
+        arguments: (argument_list
+          (function_call
+            arguments: (argument_list
+              (function_call
+                function: (identifier) @type
+                (#set! "priority" 200)))))))))
+
 ; Type constructor rhs: X := event(tuple(T, U)){} — any parametric type call
 (declaration
   rhs: (block
@@ -891,6 +932,40 @@
       (field_expression
         field: (identifier) @type
         (#set! "priority" 200)))))
+; Depth-2 function name in rhs macro_call: event(signalable(...)){ }
+(declaration
+  rhs: (macro_call
+    arguments: (argument_list
+      (function_call
+        function: (identifier) @type
+        (#set! "priority" 200)))))
+; Depth-2 identifier args in rhs macro_call: event(tuple(T, U)){}
+(declaration
+  rhs: (macro_call
+    arguments: (argument_list
+      (function_call
+        arguments: (argument_list
+          (identifier) @type
+          (#set! "priority" 200))))))
+; Depth-3 function name in rhs macro_call: event(tuple(...signalable(...))){}
+(declaration
+  rhs: (macro_call
+    arguments: (argument_list
+      (function_call
+        arguments: (argument_list
+          (function_call
+            function: (identifier) @type
+            (#set! "priority" 200)))))))
+; Depth-3 identifier args in rhs macro_call: event(tuple(signalable(T))){}
+(declaration
+  rhs: (macro_call
+    arguments: (argument_list
+      (function_call
+        arguments: (argument_list
+          (function_call
+            arguments: (argument_list
+              (identifier) @type
+              (#set! "priority" 200))))))))
 
 ; Standalone type constructor call: event(tuple(T, U)){} parsed outside rhs block
 ; (occurs in error-recovery context where the rhs block ends up empty)
@@ -902,6 +977,22 @@
       arguments: (argument_list
         (identifier) @type
         (#set! "priority" 200)))))
+(macro_call
+  macro: (identifier) @_m
+  (#match? @_m "^(event|option|array|map)$")
+  arguments: (argument_list
+    (function_call
+      function: (identifier) @type
+      (#set! "priority" 200))))
+(macro_call
+  macro: (identifier) @_m
+  (#match? @_m "^(event|option|array|map)$")
+  arguments: (argument_list
+    (function_call
+      arguments: (argument_list
+        (function_call
+          function: (identifier) @type
+          (#set! "priority" 200))))))
 (macro_call
   macro: (identifier) @_m
   (#match? @_m "^(event|option|array|map)$")
