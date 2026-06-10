@@ -202,6 +202,22 @@
 (declaration
   type_hint: (identifier) @type)
 
+; Anonymous parameters: :BrainrotManager.brainrot_instance (parsed as unary_expression)
+(function_declaration
+  (unary_expression
+    operand: (identifier) @type
+    (#set! "priority" 200)))
+(function_declaration
+  (unary_expression
+    operand: (field_expression
+      target: (identifier) @type
+      (#set! "priority" 200))))
+(function_declaration
+  (unary_expression
+    operand: (field_expression
+      field: (identifier) @type
+      (#set! "priority" 200))))
+
 ; Type hint as qualified path: Bar: Module.type_name  (depth 1)
 (declaration
   type_hint: (field_expression
@@ -446,13 +462,13 @@
 ; for: FloorIndex := 0..LastFloorIndex — upper bound of range is a variable
 (macro_call
   macro: (identifier) @_for
-  (#eq? @_for "for")
+  (#match? @_for "^(for|first)$")
   (block
     (range_expression
       rhs: (identifier) @variable)))
 (macro_call
   macro: (identifier) @_for
-  (#eq? @_for "for")
+  (#match? @_for "^(for|first)$")
   (block
     (range_expression
       lhs: (range_expression
@@ -461,7 +477,7 @@
 ; for: Item : Collection — collection is a variable, not a type
 (macro_call
   macro: (identifier) @_for
-  (#eq? @_for "for")
+  (#match? @_for "^(for|first)$")
   (block
     (declaration
       type_hint: (identifier) @variable)))
@@ -469,7 +485,7 @@
 ; for: Index->Item : Collection — collection in thin-arrow form
 (macro_call
   macro: (identifier) @_for
-  (#eq? @_for "for")
+  (#match? @_for "^(for|first)$")
   (block
     (thin_arrow_expression
       rhs: (declaration
@@ -477,7 +493,7 @@
         (#set! "priority" 300)))))
 (macro_call
   macro: (identifier) @_for
-  (#eq? @_for "for")
+  (#match? @_for "^(for|first)$")
   (block
     (thin_arrow_expression
       rhs: (declaration
@@ -486,7 +502,7 @@
           (#set! "priority" 300))))))
 (macro_call
   macro: (identifier) @_for
-  (#eq? @_for "for")
+  (#match? @_for "^(for|first)$")
   (block
     (thin_arrow_expression
       rhs: (declaration
@@ -497,7 +513,7 @@
 ; for: Item : Module.Collection — qualified collection, neither part is a type
 (macro_call
   macro: (identifier) @_for
-  (#eq? @_for "for")
+  (#match? @_for "^(for|first)$")
   (block
     (declaration
       type_hint: (field_expression
@@ -505,7 +521,7 @@
         (#set! "priority" 300)))))
 (macro_call
   macro: (identifier) @_for
-  (#eq? @_for "for")
+  (#match? @_for "^(for|first)$")
   (block
     (declaration
       type_hint: (field_expression
@@ -515,7 +531,7 @@
 ; for: Item : A.B.C — deeper qualified collection path, still variables
 (macro_call
   macro: (identifier) @_for
-  (#eq? @_for "for")
+  (#match? @_for "^(for|first)$")
   (block
     (declaration
       type_hint: (field_expression
@@ -524,7 +540,7 @@
           (#set! "priority" 300))))))
 (macro_call
   macro: (identifier) @_for
-  (#eq? @_for "for")
+  (#match? @_for "^(for|first)$")
   (block
     (declaration
       type_hint: (field_expression
@@ -533,7 +549,7 @@
           (#set! "priority" 300))))))
 (macro_call
   macro: (identifier) @_for
-  (#eq? @_for "for")
+  (#match? @_for "^(for|first)$")
   (block
     (declaration
       type_hint: (field_expression
@@ -571,7 +587,7 @@
 (ERROR
   (macro_call
     macro: (identifier) @_for
-    (#eq? @_for "for")
+    (#match? @_for "^(for|first)$")
     (block))
   .
   (declaration
@@ -580,7 +596,7 @@
 (ERROR
   (macro_call
     macro: (identifier) @_for
-    (#eq? @_for "for")
+    (#match? @_for "^(for|first)$")
     (block))
   .
   (declaration
@@ -590,7 +606,7 @@
 (ERROR
   (macro_call
     macro: (identifier) @_for
-    (#eq? @_for "for")
+    (#match? @_for "^(for|first)$")
     (block))
   .
   (declaration
@@ -689,7 +705,7 @@
   (#match? @keyword.conditional "^(if|then|else|case)$")
   (#set! "priority" 50))
 ((identifier) @keyword.repeat
-  (#match? @keyword.repeat "^(for|loop|do)$")
+  (#match? @keyword.repeat "^(for|first|loop|do)$")
   (#set! "priority" 50))
 
 ; ---------------------------------------------------------------------------
@@ -710,12 +726,12 @@
 ; Loop macros
 (macro_call
   macro: (identifier) @keyword.repeat
-  (#match? @keyword.repeat "^(for|loop|do)$"))
+  (#match? @keyword.repeat "^(for|first|loop|do)$"))
 
 ; Any remaining macro call gets function.macro treatment (excludes keyword macros)
 (macro_call
   macro: (identifier) @function.macro
-  (#not-match? @function.macro "^\\s*(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|logic|if|then|else|case|for|do|return|enum|module|class|interface|struct|tuple|type)$"))
+  (#not-match? @function.macro "^\\s*(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|logic|if|then|else|case|for|first|do|return|enum|module|class|interface|struct|tuple|type)$"))
 
 ; The ':' in indent-block macro calls.
 ; The external "macro:" token is zero-length at the position after ':'; use
@@ -733,7 +749,7 @@
 (macro_call
   macro: (identifier) @_kr
   (block "macro:" @keyword.repeat)
-  (#match? @_kr "^\\s*(for|loop|do)$")
+  (#match? @_kr "^\\s*(for|first|loop|do)$")
   (#offset! @keyword.repeat 0 -1 0 0))
 
 ; ---------------------------------------------------------------------------
