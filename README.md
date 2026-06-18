@@ -3,7 +3,7 @@
 </p>
 
 ## Showcase
-<img width="584" height="886" alt="image" src="https://github.com/user-attachments/assets/1f2be6a3-a702-4b5f-a63a-11c8bcea7f58" />
+<img width="604" height="881" alt="image" src="https://github.com/user-attachments/assets/016f190f-a3e5-45a4-b2c2-de5216d9abb8" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0aac8959-130d-42f9-b83a-bf61953accdf" />
 
 
