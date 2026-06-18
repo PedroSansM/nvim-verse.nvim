@@ -53,7 +53,8 @@
 
 ; Function calls
 (function_call
-  function: (identifier) @function.call)
+  function: (identifier) @function.call
+  (#not-match? @function.call "^(if|then|else|for|first|loop|do|return|and|or|not|case|spawn|race|sync|rush|branch|block|defer|option|using|map|array|profile|logic|enum|module|class|interface|struct|tuple|type)$"))
 
 (function_call
   function: (field_expression
