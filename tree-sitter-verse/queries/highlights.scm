@@ -61,6 +61,12 @@
     field: (identifier) @function.method.call
     (#set! "priority" 200)))
 
+; of: method call form: Obj.Method of: ...
+(of_expression
+  lhs: (field_expression
+    field: (identifier) @function.method.call
+    (#set! "priority" 200)))
+
 ; Struct constructor with qualified name: Module.TypeName{...}
 ; The macro is a field_expression — both module prefix and constructor name are @function.macro.
 (macro_call
@@ -177,6 +183,13 @@
 (declaration
   lhs: "("*
   lhs: (identifier) @constant)
+
+; Struct literal field initializer: Type. Field := Value — Field is a named field
+; The dot-form macro_call is the lhs; the identifier inside its block is the field name.
+(declaration
+  lhs: (macro_call
+    (block (identifier) @constant))
+  (#set! "priority" 200))
 
 ; set expression LHS / RHS
 (set_expression
