@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <wctype.h>
 
 enum TokenType {
     AUTO_TERMINATOR,
@@ -139,7 +140,7 @@ static bool scan_auto_terminator(
             else_pos += 1;
             continue;
         }
-        if (isalnum(lexer->lookahead)) {
+        if (iswalnum(lexer->lookahead)) {
             if (else_pos < 4) {
                 return false;
             }

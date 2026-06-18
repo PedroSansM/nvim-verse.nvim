@@ -1198,7 +1198,15 @@
             "named": false
           },
           {
+            "type": "else_keyword",
+            "named": true
+          },
+          {
             "type": "or",
+            "named": false
+          },
+          {
+            "type": "then",
             "named": false
           }
         ]
@@ -1528,6 +1536,7 @@
   {
     "type": "block_comment",
     "named": true,
+    "extra": true,
     "fields": {}
   },
   {
@@ -4015,6 +4024,7 @@
   {
     "type": "indent_comment",
     "named": true,
+    "extra": true,
     "fields": {}
   },
   {
@@ -4231,6 +4241,7 @@
   {
     "type": "line_comment",
     "named": true,
+    "extra": true,
     "fields": {}
   },
   {
@@ -8365,6 +8376,10 @@
   },
   {
     "type": "set",
+    "named": false
+  },
+  {
+    "type": "then",
     "named": false
   },
   {

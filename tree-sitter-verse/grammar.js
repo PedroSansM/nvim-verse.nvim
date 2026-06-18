@@ -34,6 +34,8 @@ const PREC = {
   cmp: 4,
   and: 3,
   or: 2,
+  else_op: 2,
+  then: 1,
   decl: 1,
   where: -1,
 };
@@ -69,6 +71,7 @@ module.exports = grammar({
     [$._stdexpr, $._argument_list_paren],
     [$.unit, $._argument_list_paren],
     [$.macro_call],
+    [$.binary_expression, $.macro_call],
   ],
 
   extras: $ => [/\s+/, $.line_comment, $.block_comment, $.indent_comment],
@@ -436,8 +439,10 @@ module.exports = grammar({
       , ['>'  , PREC.cmp ]
       , ['<=' , PREC.cmp ]
       , ['>=' , PREC.cmp ]
-      , ['and', PREC.and ]
-      , ['or' , PREC.or  ]
+      , ['and' , PREC.and ]
+      , ['or'  , PREC.or  ]
+      , ['then', PREC.then]
+      , [$.else_keyword, PREC.else_op]
       ];
       return choice(...binary_table.map(
         ([op, pval]) => prec.left(pval, seq(

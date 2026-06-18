@@ -723,6 +723,24 @@
   (#match? @keyword.conditional "^(if|then|else|case)$"))
 (else_keyword) @keyword.conditional
 
+; Inline "then" operator: if. cond then expr — 'then' is a binary operator token
+(binary_expression
+  operator: "then" @keyword.conditional
+  (#set! "priority" 200))
+; Inline "else" operator: ... then expr else expr — else_keyword used as binary operator
+(binary_expression
+  operator: (else_keyword) @keyword.conditional
+  (#set! "priority" 200))
+
+; Inline else without dot/block: "else Print("F")" in error-recovery context.
+; else_keyword is a sibling of a bare identifier inside an ERROR node.
+; Treat the immediately-following identifier as a function call.
+(ERROR
+  (else_keyword)
+  .
+  (identifier) @function.call
+  (#set! "priority" 200))
+
 ; Loop macros
 (macro_call
   macro: (identifier) @keyword.repeat
