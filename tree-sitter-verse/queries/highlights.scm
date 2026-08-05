@@ -408,7 +408,7 @@
 ; ---------------------------------------------------------------------------
 
 (is_declaration
-  lhs: (identifier) @variable)
+  lhs: (identifier) @constant)
 (is_declaration
   (is_keyword) @keyword.operator)
 
@@ -472,6 +472,10 @@
 ; for Index->Item : Array — index variable on the LHS of ->
 (thin_arrow_expression
   lhs: (identifier) @variable)
+
+; General range upper/lower bound: 0..Max, 0..Max-1, Min..Max etc.
+(range_expression rhs: (identifier) @variable)
+(range_expression lhs: (identifier) @variable)
 
 ; for: FloorIndex := 0..LastFloorIndex — upper bound of range is a variable
 (macro_call
