@@ -34,7 +34,8 @@
 
 ; Free function declarations
 (function_declaration
-  name: (identifier) @function)
+  name: (identifier) @function
+  (#not-match? @function "^(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|logic|if|then|else|for|first|do|return|case)$"))
 
 ; Method / extension function declared on a receiver:
 ;   (Receiver: Type).MethodName(...)
@@ -60,6 +61,14 @@
   function: (field_expression
     field: (identifier) @function.method.call
     (#set! "priority" 200)))
+
+; (Obj.Method(); expr) — field_expression and argument_list as ERROR-recovery siblings
+(ERROR
+  (field_expression
+    field: (identifier) @function.method.call)
+  .
+  [(argument_list) (ERROR)]
+  (#set! "priority" 200))
 
 ; of: method call form: Obj.Method of: ...
 (of_expression
@@ -718,13 +727,13 @@
 ; where the macro_call wrapper is absent; overridden by specific macro_call patterns below)
 ((identifier) @keyword
   (#match? @keyword "^(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|logic)$")
-  (#set! "priority" 50))
+  (#set! "priority" 200))
 ((identifier) @keyword.conditional
   (#match? @keyword.conditional "^(if|then|else|case)$")
-  (#set! "priority" 50))
+  (#set! "priority" 200))
 ((identifier) @keyword.repeat
   (#match? @keyword.repeat "^(for|first|loop|do)$")
-  (#set! "priority" 50))
+  (#set! "priority" 200))
 
 ; ---------------------------------------------------------------------------
 ; Macro keywords

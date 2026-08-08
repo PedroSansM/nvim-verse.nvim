@@ -298,12 +298,49 @@
         }
       ]
     },
+    "sequence_expression": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expr"
+        },
+        {
+          "type": "REPEAT1",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": ";"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_expr"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        }
+      ]
+    },
     "_standalone_expr": {
       "type": "CHOICE",
       "members": [
         {
           "type": "SYMBOL",
           "name": "unit"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sequence_expression"
         },
         {
           "type": "SYMBOL",
@@ -2598,8 +2635,8 @@
       "macro_call"
     ],
     [
-      "binary_expression",
-      "macro_call"
+      "_complete_expr",
+      "sequence_expression"
     ]
   ],
   "precedences": [],
