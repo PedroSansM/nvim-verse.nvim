@@ -306,23 +306,10 @@
           "value": "("
         },
         {
-          "type": "SYMBOL",
-          "name": "_expr"
-        },
-        {
           "type": "REPEAT1",
           "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": ";"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "_expr"
-              }
-            ]
+            "type": "SYMBOL",
+            "name": "_complete_expr"
           }
         },
         {
@@ -2637,6 +2624,10 @@
     [
       "_complete_expr",
       "sequence_expression"
+    ],
+    [
+      "sequence_expression",
+      "_argument_list_paren"
     ]
   ],
   "precedences": [],

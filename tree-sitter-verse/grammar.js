@@ -72,6 +72,7 @@ module.exports = grammar({
     [$.unit, $._argument_list_paren],
     [$.macro_call],
     [$._complete_expr, $.sequence_expression],
+    [$.sequence_expression, $._argument_list_paren],
   ],
 
   extras: $ => [/\s+/, $.line_comment, $.block_comment, $.indent_comment],
@@ -145,11 +146,10 @@ module.exports = grammar({
       )),
 
     unit: _ => seq("(", ")"),
-    // (expr; expr) — sequence: evaluate first for side-effects, yield second
+    // (expr; expr) or (stmt\n stmt\n expr) — sequence/decision block
     sequence_expression: $ => seq(
       '(',
-      $._expr,
-      repeat1(seq(';', $._expr)),
+      repeat1($._complete_expr),
       ')',
     ),
     _standalone_expr: $ => choice(
