@@ -9,7 +9,7 @@
 (declaration
   lhs: (identifier) @local.definition)
 
-(is_declaration
+(is_expression
   lhs: (identifier) @local.definition)
 
 (named_argument

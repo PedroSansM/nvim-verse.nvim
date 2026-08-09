@@ -16,25 +16,19 @@
 ; else: header sits at the same level as surrounding block content
 (macro_call (else_keyword) @indent.branch)
 
-; In-progress argument list (ERROR state while typing)
-(ERROR
-  "(" @indent.align
-  (#set! indent.open_delimiter "(")
-  (#set! indent.close_delimiter ")")
-  .
-  (_))
+; Completed multi-line argument lists
+(argument_list) @indent.begin
 
-; In-progress curly block (ERROR state while typing)
-(ERROR
-  "{" @indent.align
-  (#set! indent.open_delimiter "{")
-  (#set! indent.close_delimiter "}")
-  .
-  (_))
+; In-progress call (ERROR with unclosed paren/brace -- no argument_list node yet)
+((ERROR "(" @_open) @indent.begin
+  (#set! indent.immediate 1))
+((ERROR "{" @_open) @indent.begin
+  (#set! indent.immediate 1))
 
-; Closing delimiters go back to opener indent level
+; Closing delimiters go back to opener indent level.
+; Note: ")" is intentionally omitted -- a lone ")" on its own line keeps the
+; hanging indent of its argument_list so `Call(<CR>)` gives an indented body.
 [
   "}"
-  ")"
   "]"
 ] @indent.branch
