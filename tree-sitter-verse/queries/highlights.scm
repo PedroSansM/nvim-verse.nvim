@@ -423,9 +423,9 @@
 ; "is:" block-assignment keyword
 ; ---------------------------------------------------------------------------
 
-(is_declaration
+(is_expression
   lhs: (identifier) @constant)
-(is_declaration
+(is_expression
   (is_keyword) @keyword.operator)
 
 ; "of:" operator — same group as is:

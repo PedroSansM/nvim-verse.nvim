@@ -32,6 +32,7 @@ const PREC = {
   add: 6,
   eq: 4,
   cmp: 4,
+  is: 5,
   and: 3,
   or: 2,
   else_op: 2,
@@ -184,7 +185,7 @@ module.exports = grammar({
       $.comma_separated_group,
 
       $.declaration,
-      $.is_declaration,
+      $.is_expression,
       $.function_declaration,
 
       $.set_expression,
@@ -319,11 +320,14 @@ module.exports = grammar({
     //
     // The "macro:" external token handles the colon + newline transition into
     // an indented block, just like it does in macro_call.
-    is_declaration: $ =>
-      prec.left(seq(
-        field('lhs', $._stdexpr),
+    is_expression: $ =>
+      prec.right(PREC.is, seq(
+        field('lhs', $._expr),
         alias('is', $.is_keyword),
-        field('rhs', alias($.macro_block, $.block)),
+        field('rhs', choice(
+          alias($.macro_block, $.block),
+          $._expr,
+        )),
       )),
 
     set_expression: $ => 
