@@ -152,9 +152,17 @@ module.exports = grammar({
       repeat1($._complete_expr),
       ')',
     ),
+    // `else Expr` without a dot/colon: the else keyword immediately followed by an expression.
+    // macro_call requires a macro_block and has prec.left(1), so it wins for `else if. X` / `else if: X`.
+    // else_expression wins when no macro_block follows (e.g. `else DommusError(...)`).
+    else_expression: $ => prec.right(seq(
+      $.else_keyword,
+      $._expr,
+    )),
     _standalone_expr: $ => choice(
       $.unit,
       $.sequence_expression,
+      $.else_expression,
       $.identifier,
       $.path_literal,
       $.logic_literal,

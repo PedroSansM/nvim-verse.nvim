@@ -221,9 +221,10 @@
 ; Types
 ; ---------------------------------------------------------------------------
 
-; Type hints in declarations
+; Type hints in declarations — priority 201 beats keyword captures (200) for names like `logic`
 (declaration
-  type_hint: (identifier) @type)
+  type_hint: (identifier) @type
+  (#set! "priority" 201))
 
 ; Anonymous parameters: :BrainrotManager.brainrot_instance (parsed as unary_expression)
 (function_declaration
@@ -411,6 +412,12 @@
 
 (attributes
   (identifier) @attribute)
+
+; macro name inside attributes (e.g. scoped in <scoped{T}>)
+(attributes
+  (macro_call
+    macro: (identifier) @attribute)
+  (#set! "priority" 201))
 
 ; ---------------------------------------------------------------------------
 ; "is:" block-assignment keyword
@@ -734,6 +741,16 @@
 ((identifier) @keyword.repeat
   (#match? @keyword.repeat "^(for|first|loop|do)$")
   (#set! "priority" 200))
+; Same patterns for when the keyword is an ERROR leaf node (e.g. `then Expr` without dot)
+((ERROR) @keyword
+  (#match? @keyword "^(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|logic)$")
+  (#set! "priority" 200))
+((ERROR) @keyword.conditional
+  (#match? @keyword.conditional "^(if|then|else|case)$")
+  (#set! "priority" 200))
+((ERROR) @keyword.repeat
+  (#match? @keyword.repeat "^(for|first|loop|do)$")
+  (#set! "priority" 200))
 
 ; ---------------------------------------------------------------------------
 ; Macro keywords
@@ -776,7 +793,7 @@
 ; Any remaining macro call gets function.macro treatment (excludes keyword macros)
 (macro_call
   macro: (identifier) @function.macro
-  (#not-match? @function.macro "^\\s*(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|logic|if|then|else|case|for|first|do|return|enum|module|class|interface|struct|tuple|type)$"))
+  (#not-match? @function.macro "^\\s*(spawn|race|sync|rush|branch|block|defer|option|loop|using|map|array|profile|not|logic|if|then|else|case|for|first|do|return|enum|module|class|interface|struct|tuple|type|scoped)$"))
 
 ; The ':' in indent-block macro calls.
 ; The external "macro:" token is zero-length at the position after ':'; use

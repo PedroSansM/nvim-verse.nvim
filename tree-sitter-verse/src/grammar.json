@@ -318,6 +318,23 @@
         }
       ]
     },
+    "else_expression": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "else_keyword"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_expr"
+          }
+        ]
+      }
+    },
     "_standalone_expr": {
       "type": "CHOICE",
       "members": [
@@ -328,6 +345,10 @@
         {
           "type": "SYMBOL",
           "name": "sequence_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "else_expression"
         },
         {
           "type": "SYMBOL",
