@@ -372,7 +372,15 @@ bool tree_sitter_verse_external_scanner_scan(
     }
 
     if (valid_symbols[INDENT] && !error_recovery) {
-        if (indent_len > prev_indent_len) {
+        // A line beginning with a closing delimiter can never open a new indent
+        // block -- it must close pending colon-blocks first (e.g. a `}` that
+        // ends a braced literal containing an indented `field:` block). Without
+        // this guard the deeper indent is mistaken for an INDENT and the closer
+        // becomes a parse error.
+        bool closes_delimiter = lexer->lookahead == '}'
+            || lexer->lookahead == ')'
+            || lexer->lookahead == ']';
+        if (indent_len > prev_indent_len && !closes_delimiter) {
             array_push(&scanner->indents, indent_len);
             lexer->mark_end(lexer);
             lexer->result_symbol = INDENT;

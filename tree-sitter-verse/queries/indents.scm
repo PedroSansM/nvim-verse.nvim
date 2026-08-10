@@ -26,9 +26,9 @@
   (#set! indent.immediate 1))
 
 ; Closing delimiters go back to opener indent level.
-; Note: ")" is intentionally omitted -- a lone ")" on its own line keeps the
-; hanging indent of its argument_list so `Call(<CR>)` gives an indented body.
+; Note: ")" and "}" are intentionally omitted -- a lone closer on its own line
+; keeps the hanging indent of its block so `Call(<CR>)` / `{<CR>}` stay indented
+; and a stray "}" typed in an empty body doesn't dedent to column 0.
 [
-  "}"
   "]"
 ] @indent.branch

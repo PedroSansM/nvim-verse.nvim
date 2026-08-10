@@ -485,9 +485,11 @@
 (return_expression
   (identifier) @variable)
 
-; for Index->Item : Array — index variable on the LHS of ->
+; for Index->Item : Array — index is LHS, bound name is RHS
 (thin_arrow_expression
-  lhs: (identifier) @variable)
+  lhs: (identifier) @constant)
+(thin_arrow_expression
+  rhs: (identifier) @constant)
 
 ; General range upper/lower bound: 0..Max, 0..Max-1, Min..Max etc.
 (range_expression rhs: (identifier) @variable)
