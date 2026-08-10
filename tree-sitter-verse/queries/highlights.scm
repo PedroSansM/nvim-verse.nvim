@@ -226,6 +226,12 @@
   type_hint: (identifier) @type
   (#set! "priority" 201))
 
+; Parenthesized type hint: Foo : (some_type) = ...
+(declaration
+  type_hint: (sequence_expression
+    (identifier) @type)
+  (#set! "priority" 201))
+
 ; Anonymous parameters: :BrainrotManager.brainrot_instance (parsed as unary_expression)
 (function_declaration
   (unary_expression
