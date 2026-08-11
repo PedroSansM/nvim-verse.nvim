@@ -210,6 +210,10 @@
 (set_expression
   (identifier) @variable)
 
+; Parenthesized identifier, e.g. `= (SomeValue)` or tuple members `(A, B)`
+(sequence_expression
+  (identifier) @variable)
+
 ; Receiver in extension method — (Self: MyClass)
 (function_declaration
   name: (field_expression

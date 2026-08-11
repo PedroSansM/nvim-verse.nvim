@@ -78,6 +78,36 @@ void tree_sitter_verse_external_scanner_deserialize(
     }
 }
 
+// A line beginning with `then <expr>` continues the preceding expression as
+// the `then` binary operator (e.g. multiline `if. Cond` / `then X` / `else Y`).
+// The block forms `then:` and `then {…}` are standalone macro_calls and must
+// NOT be merged, so the terminator still fires for them. Assumes the leading
+// 't' has already been matched by the caller; consumes peeked chars.
+static bool then_is_operator_continuation(TSLexer *lexer) {
+    const char *kw = "then";
+    size_t i = 0;
+    while (kw[i] != 0 && lexer->lookahead == kw[i]) {
+        lexer->advance(lexer, true);
+        i += 1;
+    }
+    // Not the whole word, or part of a longer identifier → not a `then`.
+    if (kw[i] != 0 || lexer->lookahead == '_' || iswalnum(lexer->lookahead)) {
+        return false;
+    }
+    // `then:` colon-block form → standalone macro_call.
+    if (lexer->lookahead == ':') {
+        return false;
+    }
+    // `then {…}` macro-block form → standalone macro_call.
+    while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+        lexer->advance(lexer, true);
+    }
+    if (lexer->lookahead == '{') {
+        return false;
+    }
+    return true;
+}
+
 static bool scan_auto_terminator(
     TSLexer *lexer,
     bool met_newline
@@ -93,6 +123,9 @@ static bool scan_auto_terminator(
             lexer->advance(lexer, true);
         }
         if (lexer->lookahead == '.') {
+            return false;
+        }
+        if (lexer->lookahead == 't' && then_is_operator_continuation(lexer)) {
             return false;
         }
         return true;
