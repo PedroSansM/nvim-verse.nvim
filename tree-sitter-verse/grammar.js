@@ -37,6 +37,7 @@ const PREC = {
   or: 2,
   else_op: 2,
   then: 1,
+  do: 1,
   decl: 1,
   where: -1,
 };
@@ -205,6 +206,7 @@ module.exports = grammar({
       $.at_expression,
       $.to_expression,
       $.where_expression,
+      $.do_expression,
     ),
     //#endregion
 
@@ -499,6 +501,18 @@ module.exports = grammar({
       binary_rule($, "to", PREC.to),
     where_expression: $ =>
       binary_rule($, "where", PREC.where),
+
+    // Inline loop body: `for. Iter do Body` / `for. Iter do: block`
+    do_keyword: _ => 'do',
+    do_expression: $ =>
+      prec.right(PREC.do, seq(
+        field('lhs', $._expr),
+        $.do_keyword,
+        field('rhs', choice(
+          alias($.macro_block, $.block),
+          $._expr,
+        )),
+      )),
 
     unary_expression: $ => {
       /** @type [string, number][] */

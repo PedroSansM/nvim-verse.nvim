@@ -802,6 +802,9 @@
   macro: (identifier) @keyword.repeat
   (#match? @keyword.repeat "^(for|first|loop|do)$"))
 
+; Inline "do" operator: for. Iter do Body
+(do_keyword) @keyword.repeat
+
 ; Any remaining macro call gets function.macro treatment (excludes keyword macros)
 (macro_call
   macro: (identifier) @function.macro

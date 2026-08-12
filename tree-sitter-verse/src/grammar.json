@@ -417,7 +417,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "is_declaration"
+          "name": "is_expression"
         },
         {
           "type": "SYMBOL",
@@ -478,6 +478,10 @@
         {
           "type": "SYMBOL",
           "name": "where_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "do_expression"
         }
       ]
     },
@@ -974,9 +978,9 @@
         ]
       }
     },
-    "is_declaration": {
-      "type": "PREC_LEFT",
-      "value": 0,
+    "is_expression": {
+      "type": "PREC_RIGHT",
+      "value": 5,
       "content": {
         "type": "SEQ",
         "members": [
@@ -985,7 +989,7 @@
             "name": "lhs",
             "content": {
               "type": "SYMBOL",
-              "name": "_stdexpr"
+              "name": "_expr"
             }
           },
           {
@@ -1001,13 +1005,22 @@
             "type": "FIELD",
             "name": "rhs",
             "content": {
-              "type": "ALIAS",
-              "content": {
-                "type": "SYMBOL",
-                "name": "macro_block"
-              },
-              "named": true,
-              "value": "block"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "macro_block"
+                  },
+                  "named": true,
+                  "value": "block"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_expr"
+                }
+              ]
             }
           }
         ]
@@ -2423,6 +2436,53 @@
             "content": {
               "type": "SYMBOL",
               "name": "_expr"
+            }
+          }
+        ]
+      }
+    },
+    "do_keyword": {
+      "type": "STRING",
+      "value": "do"
+    },
+    "do_expression": {
+      "type": "PREC_RIGHT",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "lhs",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_expr"
+            }
+          },
+          {
+            "type": "SYMBOL",
+            "name": "do_keyword"
+          },
+          {
+            "type": "FIELD",
+            "name": "rhs",
+            "content": {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "macro_block"
+                  },
+                  "named": true,
+                  "value": "block"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_expr"
+                }
+              ]
             }
           }
         ]
